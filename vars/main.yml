@@ -4,3 +4,4 @@ pacemaker_services:
   - pcsd
   - corosync
   - pacemaker
+pacemaker_user: hacluster

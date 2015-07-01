@@ -1,9 +1,15 @@
 ---
 - name: Install Pacemaker Configuration System package
+  delegate_to: "{{ pacemaker_members }}"
   yum: name={{ pacemaker_package }} state=installed
 
 - name: Enable and start Pacemaker services
+  delegate_to: "{{ pacemaker_members }}"
   service: name={{ item }} enabled=yes state=started
   with_item: "{{ pacemaker_services }}"
 
-- name: Create cluster user
+- name: Change password for the cluster user
+  delegate_to: "{{ pacemaker_members }}"
+  user:
+    name={{ pacemaker_user }}
+    password={{ pacemaker_crypt_password }}
