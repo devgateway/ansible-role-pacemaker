@@ -13,3 +13,9 @@
   user:
     name={{ pacemaker_user }}
     password={{ pacemaker_crypt_password }}
+
+- name: Authenticate all nodes
+  delegate_to: {{ pacemaker_members[0] }}
+  run_once: true
+  command: "pcs cluster auth {{ pacemaker_members | join(' ') }}
+    -u {{ pacemaker_user }} -p {{ pacemaker_password }}"
