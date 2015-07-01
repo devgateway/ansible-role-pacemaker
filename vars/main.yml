@@ -1,0 +1,6 @@
+---
+pacemaker_package: pcs
+pacemaker_services:
+  - pcsd
+  - corosync
+  - pacemaker

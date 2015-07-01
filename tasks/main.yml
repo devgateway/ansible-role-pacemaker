@@ -1,0 +1,9 @@
+---
+- name: Install Pacemaker Configuration System package
+  yum: name={{ pacemaker_package }} state=installed
+
+- name: Enable and start Pacemaker services
+  service: name={{ item }} enabled=yes state=started
+  with_item: "{{ pacemaker_services }}"
+
+- name: Create cluster user
