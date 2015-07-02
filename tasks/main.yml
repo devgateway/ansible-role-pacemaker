@@ -12,7 +12,7 @@
 - name: Set the password for the cluster user
   user:
     name={{ pacemaker_user }}
-    password={{ pacemaker_password | password_hash('sha512', inventory_hostname) }}
+    password={{ pacemaker_password | password_hash('sha512', ansible_hostname) }}
 
 - name: Authenticate all nodes
   run_once: true
@@ -25,7 +25,7 @@
   args:
     creates: /var/lib/pcsd/tokens
 
-- name: Setup cluster
+- name: Setup cluster message bus
   run_once: true
   command: >
     pcs cluster setup --name {{ pacemaker_cluster_name }}
