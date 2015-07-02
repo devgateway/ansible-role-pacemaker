@@ -53,5 +53,5 @@ For the detailed descriptions check out the resources below.
 
 ## See also
 
-- [http://clusterlabs.org/doc/](The official Pacemaker documentation)
+- [The official Pacemaker documentation](http://clusterlabs.org/doc/)
 - *man pcs(8)*
