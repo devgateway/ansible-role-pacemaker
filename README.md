@@ -51,6 +51,36 @@ Finally, the values *disabled* and *wait* might be present.
 
 For the detailed descriptions check out the resources below.
 
+## Examples
+
+### Inventory
+
+    [cluster-dns]
+    alpha
+    bravo
+
+### Playbook
+    ---
+    - hosts: cluster-dns
+      roles:
+        - pacemaker
+      vars:
+        pacemaker_ansible_group=cluster-dns
+        pacemaker_password: secret
+        pacemaker_cluster_name: foobar
+        pacemaker_properties:
+          stonith_enabled: "false"
+        pacemaker_resources:
+          - id: dns-ip
+            type: "ocf:heartbeat:IPaddr2"
+            options:
+              ip: 10.0.0.1
+              cidr_netmask: 8
+            op:
+              - action: monitor
+                options:
+                  interval: 5s
+
 ## See also
 
 - [The official Pacemaker documentation](http://clusterlabs.org/doc/)
