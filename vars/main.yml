@@ -1,8 +1,3 @@
 ---
 pacemaker_package: pcs
-pacemaker_services:
-  - pcsd
-  - corosync
-  - pacemaker
 pacemaker_user: hacluster
-pacemaker_members: "{{ groups[pacemaker_ansible_group] }}"

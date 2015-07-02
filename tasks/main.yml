@@ -1,36 +1,36 @@
 ---
-- debug: var=pacemaker_members
+- name: Verify cluster group membership
+  fail: msg="Cluster hosts must be members of the group"
+  when: pacemaker_ansible_group is not iterable
 
 - name: Install Pacemaker Configuration System package
-  delegate_to: "{{ pacemaker_members }}"
   yum: name={{ pacemaker_package }} state=installed
 
-- name: Enable and start Pacemaker services
-  delegate_to: "{{ pacemaker_members }}"
-  service: name={{ item }} enabled=yes state=started
-  with_items: "{{ pacemaker_services }}"
+- name: Enable and start PCS daemon
+  service: name=pcsd enabled=yes state=started
 
-- name: Change password for the cluster user
-  delegate_to: "{{ pacemaker_members }}"
+- name: Set the password for the cluster user
   user:
     name={{ pacemaker_user }}
-    password={{ pacemaker_crypt_password }}
+    password={{ pacemaker_password | password_hash('sha512', inventory_hostname) }}
 
 - name: Authenticate all nodes
-  delegate_to: "{{ pacemaker_members[0] }}"
   run_once: true
   command: >
     pcs cluster auth
-    {% for host in pacemaker_members %}
+    {% for host in groups[pacemaker_ansible_group] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
     -u {{ pacemaker_user }} -p {{ pacemaker_password }}
+  args:
+    creates: /var/lib/pcsd/tokens
 
 - name: Setup cluster
-  delegate_to: "{{ pacemaker_members[0] }}"
   run_once: true
   command: >
     pcs cluster setup --name {{ pacemaker_cluster_name }}
-    {% for host in pacemaker_members %}
+    {% for host in groups[pacemaker_ansible_group] %}
     {{ hostvars[host]['ansible_hostname'] }}
     {% endfor %}
+  args:
+    creates: /etc/corosync/corosync.conf
