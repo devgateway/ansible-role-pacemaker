@@ -1,5 +1,5 @@
 ---
-- name: Verify cluster group membership
+- name: Ensure cluster group membership
   fail: msg="Cluster hosts must be members of a group"
   when: pacemaker_ansible_group is not iterable
 
@@ -9,7 +9,7 @@
 - name: Enable and start PCS daemon
   service: name=pcsd enabled=yes state=started
 
-- name: Set the password for the cluster user
+- name: Ensure the password for the cluster user
   user:
     name={{ pacemaker_user }}
     password={{ pacemaker_password | password_hash('sha512', ansible_hostname) }}
