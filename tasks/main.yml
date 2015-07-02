@@ -1,4 +1,6 @@
 ---
+- debug: var=pacemaker_members
+
 - name: Install Pacemaker Configuration System package
   delegate_to: "{{ pacemaker_members }}"
   yum: name={{ pacemaker_package }} state=installed
@@ -6,7 +8,7 @@
 - name: Enable and start Pacemaker services
   delegate_to: "{{ pacemaker_members }}"
   service: name={{ item }} enabled=yes state=started
-  with_item: "{{ pacemaker_services }}"
+  with_items: "{{ pacemaker_services }}"
 
 - name: Change password for the cluster user
   delegate_to: "{{ pacemaker_members }}"
@@ -15,7 +17,20 @@
     password={{ pacemaker_crypt_password }}
 
 - name: Authenticate all nodes
-  delegate_to: {{ pacemaker_members[0] }}
+  delegate_to: "{{ pacemaker_members[0] }}"
   run_once: true
-  command: "pcs cluster auth {{ pacemaker_members | join(' ') }}
-    -u {{ pacemaker_user }} -p {{ pacemaker_password }}"
+  command: >
+    pcs cluster auth
+    {% for host in pacemaker_members %}
+    {{ hostvars[host]['ansible_hostname'] }}
+    {% endfor %}
+    -u {{ pacemaker_user }} -p {{ pacemaker_password }}
+
+- name: Setup cluster
+  delegate_to: "{{ pacemaker_members[0] }}"
+  run_once: true
+  command: >
+    pcs cluster setup --name {{ pacemaker_cluster_name }}
+    {% for host in pacemaker_members %}
+    {{ hostvars[host]['ansible_hostname'] }}
+    {% endfor %}

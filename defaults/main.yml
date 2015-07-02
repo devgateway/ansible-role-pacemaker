@@ -1,5 +1,0 @@
----
-pacemaker_members: []
-#pacemaker_virtual_ip: ""
-pacemaker_password: ""
-pacemaker_cluster_name:
