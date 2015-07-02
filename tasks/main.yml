@@ -40,3 +40,8 @@
   with_items:
     - corosync
     - pacemaker
+
+- name: Set cluster properties
+  command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
+  with_dict: "{{ pacemaker_properties }}"
+  when: pacemaker_properties is defined
