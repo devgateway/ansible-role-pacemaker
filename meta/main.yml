@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Styopa Semenukha
+  description: Pacemaker cluster configuration role
+  company: Development Gateway
+  license: GPLv3
+  min_ansible_version: 1.9
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  - name: Fedora
+    versions:
+    - 19
+  categories:
+  - clustering
+dependencies: []
