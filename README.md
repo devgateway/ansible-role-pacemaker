@@ -65,7 +65,7 @@ For the detailed descriptions check out the resources below.
       roles:
         - pacemaker
       vars:
-        pacemaker_ansible_group=cluster-dns
+        pacemaker_ansible_group: cluster-dns
         pacemaker_password: secret
         pacemaker_cluster_name: foobar
         pacemaker_properties:
