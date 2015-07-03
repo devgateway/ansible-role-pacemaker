@@ -76,18 +76,17 @@
       {% endif %}
     {% endif %}
     {% if item.clone is defined %}
-      {{ item.clone.id }}
-      {% for opt, value in item.clone.options.iteritems() %}
-        {{ opt }}={{ value }}
-      {% endfor %}
+      {% if item.clone %} --clone {% endif %}
     {% elif item.masterslave is defined %}
       {% if item.masterslave.name is defined %}
         {{ item.masterslave.name }}
       {% endif %}
       {{ item.masterslave.id }}
-      {% for opt, value in item.masterslave.options.iteritems() %}
-        {{ opt }}={{ value }}
-      {% endfor %}
+      {% if item.masterslave.options is defined %}
+        {% for opt, value in item.masterslave.options.iteritems() %}
+          {{ opt }}={{ value }}
+        {% endfor %}
+      {% endif %}
     {% elif item.group is defined %}
       {{ item.group.name }}
       {% if item.group.before is defined %}
@@ -97,9 +96,7 @@
       {% endif %}
     {% endif %}
     {% if item.disabled is defined %}
-      {% if item.disabled %}
-        --disabled
-      {% endif %}
+      {% if item.disabled %} --disabled {% endif %}
     {% endif %}
     {% if item.wait is defined %}
       wait={{ item.wait }}

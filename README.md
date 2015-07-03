@@ -80,6 +80,13 @@ For the detailed descriptions check out the resources below.
               - action: monitor
                 options:
                   interval: 5s
+          - id: dns-srv
+            type: "systemd:named-chroot"
+            op:
+              - action: monitor
+                options:
+                  interval: 5s
+            clone: true
 
 ## See also
 
