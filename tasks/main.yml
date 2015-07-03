@@ -78,17 +78,12 @@
     {% if item.clone is defined %}
       {% if item.clone %} --clone {% endif %}
     {% elif item.masterslave is defined %}
+      --master
       {% if item.masterslave.name is defined %}
         {{ item.masterslave.name }}
       {% endif %}
-      {{ item.masterslave.id }}
-      {% if item.masterslave.options is defined %}
-        {% for opt, value in item.masterslave.options.iteritems() %}
-          {{ opt }}={{ value }}
-        {% endfor %}
-      {% endif %}
     {% elif item.group is defined %}
-      {{ item.group.name }}
+      --group {{ item.group.name }}
       {% if item.group.before is defined %}
         --before {{ item.group.before }}
       {% elif item.group.after is defined %}
