@@ -45,7 +45,7 @@ An array of resource definitions. Each definition is a dict of two mandatory mem
 
 They can also have optional members like *options* dict, *op* list with operation actions and their options.
 
-Additionally, there might be mutually exclusive dicts *clone*, *masterslave* and *group* with their respective options. 
+Additionally, there might be mutually exclusive members: Boolean *clone*, or dicts *masterslave* or *group* with their respective options. 
 
 Finally, the values *disabled* and *wait* might be present.
 
