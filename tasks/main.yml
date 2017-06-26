@@ -3,6 +3,18 @@
   fail: msg="Cluster hosts must be members of a group"
   when: pacemaker_ansible_group is not iterable
 
+- name: Ensure the network interface for ring0_addr is not defined when hostnames are used
+  fail: msg="If hostnames are used the network interface for ring0_addr must not be defined"
+  when: pacemaker_ring0_addr == 'ansible_hostname' and pacemaker_ring0_addr_interface is defined
+
+- name: Ensure the network interface for ring0_addr is defined when IPv4 addresses are used
+  fail: msg="If IPv4 addresses are used the network interface for ring0_addr must be defined"
+  when: pacemaker_ring0_addr == 'ansible_all_ipv4_addresses' and pacemaker_ring0_addr_interface is undefined
+
+- name: Ensure either hostnames or IPv4 addresses are used for ring0_addr
+  fail: msg="Either hostnames or IPv4 addresses must be used for ring0_addr"
+  when: not (pacemaker_ring0_addr in ['ansible_hostname', 'ansible_all_ipv4_addresses'])
+
 - name: Install Pacemaker Configuration System package
   yum: name={{ pacemaker_package }} state=installed
 
@@ -14,7 +26,7 @@
     name={{ pacemaker_user }}
     password={{ pacemaker_password | password_hash('sha512', ansible_hostname) }}
 
-- name: Authenticate all nodes
+- name: Authenticate all nodes using hostnames
   command: >
     pcs cluster auth
     {% for host in groups[pacemaker_ansible_group] %}
@@ -24,8 +36,35 @@
   run_once: true
   args:
     creates: /var/lib/pcsd/tokens
+  when: pacemaker_ring0_addr == 'ansible_hostname'
 
-- name: Setup cluster message bus
+- name: Authenticate all nodes using IPv4 addresses on the first network interace
+  command: >
+    pcs cluster auth
+    {% for host in groups[pacemaker_ansible_group] %}
+    {{ hostvars[host]['ansible_all_ipv4_addresses'][0] }}
+    {% endfor %}
+    -u {{ pacemaker_user }} -p {{ pacemaker_password }}
+  run_once: true
+  args:
+    creates: /var/lib/pcsd/tokens
+  when: (pacemaker_ring0_addr == 'ansible_all_ipv4_addresses' and
+         pacemaker_ring0_addr_interface == 0)
+
+- name: Authenticate all nodes using IPv4 addresses on the second network interace
+  command: >
+    pcs cluster auth
+    {% for host in groups[pacemaker_ansible_group] %}
+    {{ hostvars[host]['ansible_all_ipv4_addresses'][1] }}
+    {% endfor %}
+    -u {{ pacemaker_user }} -p {{ pacemaker_password }}
+  run_once: true
+  args:
+    creates: /var/lib/pcsd/tokens
+  when: (pacemaker_ring0_addr == 'ansible_all_ipv4_addresses' and
+         pacemaker_ring0_addr_interface == 1)
+
+- name: Setup cluster message bus using hostnames
   run_once: true
   command: >
     pcs cluster setup --name {{ pacemaker_cluster_name }}
@@ -34,6 +73,31 @@
     {% endfor %}
   args:
     creates: /etc/corosync/corosync.conf
+  when: pacemaker_ring0_addr == 'ansible_hostname'
+
+- name: Setup cluster message bus using IPv4 addresses on the first network interace
+  run_once: true
+  command: >
+    pcs cluster setup --name {{ pacemaker_cluster_name }}
+    {% for host in groups[pacemaker_ansible_group] %}
+    {{ hostvars[host]['ansible_all_ipv4_addresses'][0] }}
+    {% endfor %}
+  args:
+    creates: /etc/corosync/corosync.conf
+  when: (pacemaker_ring0_addr == 'ansible_all_ipv4_addresses' and
+         pacemaker_ring0_addr_interface == 0)
+
+- name: Setup cluster message bus using IPv4 addresses on the second network interace
+  run_once: true
+  command: >
+    pcs cluster setup --name {{ pacemaker_cluster_name }}
+    {% for host in groups[pacemaker_ansible_group] %}
+    {{ hostvars[host]['ansible_all_ipv4_addresses'][1] }}
+    {% endfor %}
+  args:
+    creates: /etc/corosync/corosync.conf
+  when: (pacemaker_ring0_addr == 'ansible_all_ipv4_addresses' and
+         pacemaker_ring0_addr_interface == 1)
 
 - name: Start all cluster nodes
   service: name={{ item }} enabled=yes state=started
