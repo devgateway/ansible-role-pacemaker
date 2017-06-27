@@ -1,2 +1,7 @@
 ---
 pacemaker_password: hacluster
+pacemaker_ring0_addr: ansible_hostname
+# Use the IP address on the first network interface as ring0_addr in corosync.conf
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1126998
+#pacemaker_ring0_addr: ansible_all_ipv4_addresses
+#pacemaker_ring0_addr_interface: 0
