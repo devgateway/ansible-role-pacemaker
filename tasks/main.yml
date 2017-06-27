@@ -160,3 +160,14 @@
     {% if item.wait is defined %}
       wait={{ item.wait }}
     {% endif %}
+  args:
+    creates: /var/lib/pacemaker/pacemaker_resources_created
+  register: pacemaker_resources_created
+
+- name: Lock created resources
+  run_once: true
+  when: pacemaker_resources_created is defined and pacemaker_resources_created.changed
+  command: >
+    touch /var/lib/pacemaker/pacemaker_resources_created
+  args:
+    creates: /var/lib/pacemaker/pacemaker_resources_created
