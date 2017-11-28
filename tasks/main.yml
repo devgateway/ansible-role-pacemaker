@@ -6,6 +6,10 @@
 - name: Install Pacemaker Configuration System package
   yum: name={{ pacemaker_package }} state=installed
 
+- name: Insert firewalld Rule For Pacemaker
+  firewalld: service=high-availability permanent=true state=enabled immediate=yes
+  ignore_errors: yes
+
 - name: Enable and start PCS daemon
   service: name=pcsd enabled=yes state=started
 
