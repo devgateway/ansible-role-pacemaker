@@ -4,7 +4,13 @@
   when: pacemaker_ansible_group is not iterable
 
 - name: Install Pacemaker Configuration System package
-  yum: name={{ pacemaker_package }} state=installed
+  #yum: name={{ pacemaker_package }} state=installed
+  yum: pkg={{item}} state=installed
+  with_items:
+    - pcs
+    - pacemaker
+    - psmisc
+    - policycoreutils-python
 
 - name: Insert firewalld Rule For Pacemaker
   firewalld: service=high-availability permanent=true state=enabled immediate=yes
