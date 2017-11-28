@@ -39,6 +39,10 @@ Correct example:
     pacemaker_properties:
       stonith_enabled: "false"
 
+### pacemaker\_resources\_delete
+
+If defined will first try to delete the resources ignoring any errors.
+
 ### pacemaker\_resources
 
 An array of resource definitions. Each definition is a dict of two mandatory members, *id* (resource name) and *type* (standard:provider:type string, see output of *pcs resource providers*).
@@ -51,6 +55,10 @@ Finally, the values *disabled* and *wait* might be present.
 
 For the detailed descriptions check out the resources below.
 
+### pacemaker\_constraints
+
+An array of resource constraints.
+
 ## Examples
 
 ### Inventory
@@ -59,7 +67,7 @@ For the detailed descriptions check out the resources below.
     alpha
     bravo
 
-### Playbook
+### Playbook Example 1
     ---
     - hosts: cluster-dns
       roles:
@@ -87,6 +95,67 @@ For the detailed descriptions check out the resources below.
                 options:
                   interval: 5s
             clone: true
+
+### Playbook Exmaple 2
+    ---
+    - name: Install NGINX Cluster
+      hosts: nginx-cluster
+      remote_user: root
+      # remote_user: user
+      # sudo: yes
+
+      roles:
+        - common
+        - nginx
+        - pacemaker
+      vars:
+        pacemaker_ansible_group: nginx-cluster
+        pacemaker_password: secret
+        pacemaker_cluster_name: nginx_ha_cluster
+        pacemaker_properties:
+          stonith_enabled: "false"
+          no-quorum-policy: "ignore"
+        pacemaker_resources_delete: true
+        pacemaker_resources:
+          - id: vip230
+            type: "ocf:heartbeat:IPaddr2"
+            options:
+              ip: 192.168.1.230
+              cidr_netmask: 24
+            op:
+              - action: monitor
+                options:
+                  interval: 5s
+            group:
+              name: "web_services"
+          - id: vip231
+            type: "ocf:heartbeat:IPaddr2"
+            options:
+              ip: 192.168.1.231
+              cidr_netmask: 24
+            op:
+              - action: monitor
+                options:
+                  interval: 5s
+            group:
+              name: "web_services"
+          - id: nginx
+            type: "ocf:heartbeat:nginx"
+            options:
+              configfile: "/etc/nginx/nginx.conf"
+              status10url: "http://localhost/nginx_status"
+            op:
+              - action: monitor
+                options:
+                  interval: 5s
+                  start-delay: "5s"
+            group:
+              name: "web_services"
+        pacemaker_constraints:
+          - constraint: "colocation add nginx vip230 INFINITY"
+          - constraint: "colocation add nginx vip231 INFINITY"
+          - constraint: "order vip230 then nginx"
+          - constraint: "order vip231 then nginx"
 
 ## See also
 
