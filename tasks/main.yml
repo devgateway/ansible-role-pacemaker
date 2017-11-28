@@ -57,6 +57,14 @@
   with_dict: "{{ pacemaker_properties }}"
   when: pacemaker_properties is defined
 
+- name: Delete resources
+  run_once: true
+  when: pacemaker_resources_delete is defined
+  with_items: "{{ pacemaker_resources }}"
+  command: >
+    pcs resource delete {{ item.id }}
+  ignore_errors: yes
+
 - name: Create resources
   run_once: true
   when: pacemaker_resources is defined
