@@ -103,8 +103,8 @@
     {% if item.configfile is defined %}
       configfile={{ item.configfile }}
     {% endif %}
-    {% if item.statusurl is defined %}
-      statusurl={{ item.statusurl }}
+    {% if item.status10url is defined %}
+      status10url={{ item.statusurl }}
     {% endif %}
 
 - name: Create constraints
