@@ -96,3 +96,10 @@
     {% if item.wait is defined %}
       wait={{ item.wait }}
     {% endif %}
+
+- name: Create constraints
+  run_once: true
+  when: pacemaker_constraints is defined
+  with_items: "{{ pacemaker_constraints }}"
+  command: >
+    pcs constraint {{ item.constraint }}
