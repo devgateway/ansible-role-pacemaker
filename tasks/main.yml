@@ -59,7 +59,7 @@
 
 - name: Delete resources
   run_once: true
-  when: pacemaker_resources_delete is defined
+  when: pacemaker_resources_delete is defined and pacemaker_resources is defined
   with_items: "{{ pacemaker_resources }}"
   command: >
     pcs resource delete {{ item.id }}
