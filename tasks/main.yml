@@ -4,7 +4,17 @@
   when: pacemaker_ansible_group is not iterable
 
 - name: Install Pacemaker Configuration System package
-  yum: name={{ pacemaker_package }} state=installed
+  #yum: name={{ pacemaker_package }} state=installed
+  yum: pkg={{item}} state=installed
+  with_items:
+    - pcs
+    - pacemaker
+    - psmisc
+    - policycoreutils-python
+
+- name: Insert firewalld Rule For Pacemaker
+  firewalld: service=high-availability permanent=true state=enabled immediate=yes
+  ignore_errors: yes
 
 - name: Enable and start PCS daemon
   service: name=pcsd enabled=yes state=started
@@ -46,6 +56,14 @@
   command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
   with_dict: "{{ pacemaker_properties }}"
   when: pacemaker_properties is defined
+
+- name: Delete resources
+  run_once: true
+  when: pacemaker_resources_delete is defined and pacemaker_resources is defined
+  with_items: "{{ pacemaker_resources }}"
+  command: >
+    pcs resource delete {{ item.id }}
+  ignore_errors: yes
 
 - name: Create resources
   run_once: true
@@ -96,3 +114,10 @@
     {% if item.wait is defined %}
       wait={{ item.wait }}
     {% endif %}
+
+- name: Create constraints
+  run_once: true
+  when: pacemaker_constraints is defined
+  with_items: "{{ pacemaker_constraints }}"
+  command: >
+    pcs constraint {{ item.constraint }}
