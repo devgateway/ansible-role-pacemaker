@@ -96,6 +96,12 @@ An array of resource constraints.
                   interval: 5s
             clone: true
 
+### Inventory
+
+    [nginx-cluster]
+    nginx01
+    nginx02
+
 ### Playbook Example 2
     ---
     - name: Install NGINX Cluster
