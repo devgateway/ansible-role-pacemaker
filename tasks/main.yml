@@ -106,12 +106,6 @@
     {% if item.wait is defined %}
       wait={{ item.wait }}
     {% endif %}
-    {% if item.configfile is defined %}
-      configfile={{ item.configfile }}
-    {% endif %}
-    {% if item.status10url is defined %}
-      status10url={{ item.status10url }}
-    {% endif %}
 
 - name: Create constraints
   run_once: true
