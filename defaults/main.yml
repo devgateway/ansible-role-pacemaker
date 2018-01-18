@@ -1,2 +1,2 @@
 ---
-pacemaker_password: hacluster
+pacemaker_user: hacluster
