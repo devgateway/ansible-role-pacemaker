@@ -6,29 +6,31 @@ This role has been written for and tested on Scientific Linux 7, so it should be
 
 ## Role variables
 
-### pacemaker\_ansible\_group
+## Required
 
-The Ansible inventory group containing cluster peers. Since a host be a member of multiple and nested groups, we can't reliable guess this value.
-
-The playbook will walk the group members and configure them as members of a cluster.
-
-### pacemaker\_cluster\_name
+#### `pacemaker_cluster_name`
 
 Name of the cluster.
 
-### pacemaker\_package
-
-Package containing PCS daemon and client, which also depends on Pacemaker and Corosync packages. In EL and Fedora the package is called *pcs*.
-
-### pacemaker\_user
-
-The system user to authenticate PCS nodes with. PCS will authenticate all nodes with each other.
-
-### pacemaker\_password
+#### `pacemaker_password`
 
 The plaintext password for the mentioned user. It will be hashed with per-host salt to maintain idempotency.
 
-### pacemaker\_properties
+## Optional
+
+#### `pacemaker_hosts`
+
+The list of cluster members.
+
+Default: `ansible_play_batch`
+
+#### `pacemaker_user`
+
+The system user to authenticate PCS nodes with. PCS will authenticate all nodes with each other.
+
+Default: hacluster
+
+#### `pacemaker_properties`
 
 The keys of this dict/hash with underscores correspond to pacemaker properties with hyphens.
 
@@ -39,7 +41,7 @@ Correct example:
     pacemaker_properties:
       stonith_enabled: "false"
 
-### pacemaker\_resources
+#### `pacemaker_resources`
 
 An array of resource definitions. Each definition is a dict of two mandatory members, *id* (resource name) and *type* (standard:provider:type string, see output of *pcs resource providers*).
 
