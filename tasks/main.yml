@@ -42,23 +42,13 @@
     - corosync
     - pacemaker
 
-- name: Query cluster properties
+- name: Configure cluster properties
   run_once: true
-  command: crm_attribute --quiet --query --name={{ item.key | replace('_', '-') }}
+  include_tasks: property.yml
   with_dict: "{{ pacemaker_properties }}"
   when: pacemaker_properties is defined
-  register: crm_attr
-  changed_when: false
 
-- name: Set cluster properties
-  run_once: true
-  command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
-  with_items: "{{ crm_attr.results | default([]) }}"
-  loop_control:
-    loop_var: result
-  when: pacemaker_properties[result.item.key] != result.item.value
-
-- name: Set cluster resources
+- name: Configure cluster resources
   run_once: true
   include_tasks: resource.yml
   with_items: "{{ pacemaker_resources }}"

@@ -1,0 +1,9 @@
+---
+- name: Query property {{ item.key }}
+  command: crm_attribute --quiet --query --name={{ item.key | replace('_', '-') }}
+  register: query
+  changed_when: false
+
+- name: Set cluster property {{ item.key }}
+  command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
+  when: query.stdout != item.value
