@@ -42,11 +42,21 @@
     - corosync
     - pacemaker
 
+- name: Query cluster properties
+  run_once: true
+  command: crm_attribute --quiet --query --name={{ item.key | replace('_', '-') }}
+  with_dict: "{{ pacemaker_properties }}"
+  when: pacemaker_properties is defined
+  register: crm_attr
+  changed_when: false
+
 - name: Set cluster properties
   run_once: true
   command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
-  with_dict: "{{ pacemaker_properties }}"
-  when: pacemaker_properties is defined
+  with_items: "{{ crm_attr.results | default([]) }}"
+  loop_control:
+    loop_var: result
+  when: pacemaker_properties[result.item.key] != result.item.value
 
 - name: Create resources
   run_once: true
