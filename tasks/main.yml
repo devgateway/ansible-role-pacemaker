@@ -13,11 +13,13 @@
 - name: Ensure the password for the cluster user
   user:
     name: "{{ pacemaker_user }}"
+    system: true
     password: "{{ pacemaker_password | password_hash('sha512', ansible_hostname) }}"
 
 - name: Authenticate all nodes
   command: >
-    pcs cluster auth {{ pacemaker_hosts | join(' ') }}
+    pcs cluster auth
+    {{ pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
     -u {{ pacemaker_user }} -p {{ pacemaker_password }}
   run_once: true
   args:
@@ -25,7 +27,9 @@
 
 - name: Setup cluster message bus
   run_once: true
-  command: pcs cluster setup --name {{ pacemaker_cluster_name }} {{ pacemaker_hosts | join(' ') }}
+  command: >
+    pcs cluster setup --name {{ pacemaker_cluster_name }}
+    {{ pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
   args:
     creates: /etc/corosync/corosync.conf
 
