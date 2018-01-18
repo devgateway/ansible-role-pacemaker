@@ -58,10 +58,19 @@
     loop_var: result
   when: pacemaker_properties[result.item.key] != result.item.value
 
+- name: Query resources
+  run_once: true
+  command: crm_resource --quiet --resource {{ item.id }} --locate
+  when: pacemaker_resources is defined
+  with_items: "{{ pacemaker_resources }}"
+  register: crm_res
+  changed_when: false
+  failed_when: crm_res.rc not in [0, 6]
+
 - name: Create resources
   run_once: true
   when: pacemaker_resources is defined
-  with_items: "{{ pacemaker_resources }}"
+  with_items: "{{ crm_res.results | selectattr('rc', 'equalto', 6) | list }}"
   command: >
     pcs resource create {{ item.id }} {{ item.type }}
     {% if item.options is defined %}
