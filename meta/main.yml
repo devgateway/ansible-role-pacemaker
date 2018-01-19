@@ -1,10 +1,10 @@
 ---
 galaxy_info:
-  author: Styopa Semenukha
-  description: Pacemaker cluster configuration role
+  author: Development Gateway
+  description: Configure Pacemaker cluster
   company: Development Gateway
-  license: GPLv3
-  min_ansible_version: 1.9
+  license: GPLv3+
+  min_ansible_version: 2.1
   platforms:
   - name: EL
     versions:
