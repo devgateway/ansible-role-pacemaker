@@ -1,0 +1,6 @@
+---
+- name: "Applying \"{{ item | truncate(40) }}\""
+  command: pcs constraint {{ item }}
+  register: result
+  changed_when: result.rc == 0 or 'constraint already exists' not in result.stderr
+  failed_when: result.rc and 'constraint already exists' not in result.stderr

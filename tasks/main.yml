@@ -53,3 +53,9 @@
   include_tasks: resource.yml
   with_items: "{{ pacemaker_resources }}"
   when: pacemaker_resources is defined
+
+- name: Apply resource constraints
+  include_tasks: constraint.yml
+  run_once: true
+  with_items: "{{ pacemaker_constraints }}"
+  when: pacemaker_constraints is defined
