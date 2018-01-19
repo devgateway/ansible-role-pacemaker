@@ -3,6 +3,7 @@
   command: crm_attribute --quiet --query --name={{ item.key | replace('_', '-') }}
   register: query
   changed_when: false
+  failed_when: query.rc not in [0, 6]
 
 - name: Set cluster property {{ item.key }}
   command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}
