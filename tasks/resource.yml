@@ -1,6 +1,8 @@
 ---
 - name: Query resource {{ item.id }}
-  command: crm_resource --quiet --resource {{ item.id }} --locate
+  command: >
+    crm_resource --quiet --locate
+    --resource {{ item.id }}{{ item.clone | default(false) | ternary('-clone', '') }}
   register: query
   changed_when: false
   failed_when: query.rc not in [0, 6]
