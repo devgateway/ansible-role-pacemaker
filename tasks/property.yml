@@ -4,6 +4,7 @@
   register: query
   changed_when: false
   failed_when: query.rc not in [0, 6]
+  check_mode: false
 
 - name: Set property {{ item.key }}
   command: pcs property set {{ item.key | replace('_', '-') }}={{ item.value }}

@@ -6,6 +6,7 @@
   register: query
   changed_when: false
   failed_when: query.rc not in [0, 6]
+  check_mode: false
 
 - name: Create resource {{ item.id }}
   run_once: true
