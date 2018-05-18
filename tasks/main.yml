@@ -48,6 +48,11 @@
   with_dict: "{{ pacemaker_properties }}"
   when: pacemaker_properties is defined
 
+- name: Configure resource defaults
+  run_once: true
+  include_tasks: resource-defaults.yml
+  with_dict: "{{ pacemaker_resource_defaults | default({}) }}"
+
 - name: Configure cluster resources
   run_once: true
   include_tasks: resource.yml

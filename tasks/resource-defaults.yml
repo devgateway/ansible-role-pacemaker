@@ -1,0 +1,22 @@
+---
+- name: Query defaults for {{ item.key }}
+  command: >
+    crm_attribute
+    --query
+    --name={{ item.key }}
+    --type=rsc_defaults
+    --quiet
+  register: query
+  changed_when: false
+  failed_when: query.rc not in [0, 6]
+  check_mode: false
+
+- name: Set defaults for {{ item.key }}
+  run_once: true
+  when: query.stdout != item.value
+  command: >
+    crm_attribute
+    --update={{ item.value | quote }}
+    --name={{ item.key }}
+    --type=rsc_defaults
+    --quiet
