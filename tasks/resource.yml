@@ -13,46 +13,46 @@
   when: query.rc == 6
   command: >
     pcs resource create {{ item.id }} {{ item.type }}
-    {% if item.options is defined %}
-      {% for opt, value in item.options.iteritems() %}
-        {{ opt }}={{ value | quote }}
-      {% endfor %}
-    {% endif %}
-    {% if item.op is defined %}
-      op
-      {% for op in item.op %}
-        {{ op.action }}
-        {% for opt, value in op.options.iteritems() %}
-          {{ opt }}={{ value | quote }}
-        {% endfor %}
-      {% endfor %}
-    {% endif %}
-    {% if item.meta is defined %}
-      meta {{ item.meta.id }}
-      {% if item.meta.options is defined %}
-        {% for opt, value in item.meta.options.iteritems() %}
-          {{ opt }}={{ value | quote }}
-        {% endfor %}
-      {% endif %}
-    {% endif %}
-    {% if item.clone is defined %}
-      {% if item.clone %} --clone {% endif %}
-    {% elif item.masterslave is defined %}
-      --master
-      {% if item.masterslave.name is defined %}
-        {{ item.masterslave.name }}
-      {% endif %}
-    {% elif item.group is defined %}
-      --group {{ item.group.name }}
-      {% if item.group.before is defined %}
-        --before {{ item.group.before }}
-      {% elif item.group.after is defined %}
-        --after {{ item.group.after }}
-      {% endif %}
-    {% endif %}
-    {% if item.disabled is defined %}
-      {% if item.disabled %} --disabled {% endif %}
-    {% endif %}
-    {% if item.wait is defined %}
-      wait={{ item.wait }}
-    {% endif %}
+    {%  if item.options is defined %}
+    {%    for opt, value in item.options.iteritems() %}
+    {{      opt ~ '=' ~ (value | quote) }}
+    {%    endfor %}
+    {%  endif %}
+    {%  if item.op is defined %}
+    {{  'op' }}
+    {%    for op in item.op %}
+    {{      op.action }}
+    {%      for opt, value in op.options.iteritems() %}
+    {{        opt ~ '=' ~ (value | quote) }}
+    {%      endfor %}
+    {%    endfor %}
+    {%  endif %}
+    {%  if item.meta is defined %}
+    {{  'meta ' ~ item.meta.id }}
+    {%    if item.meta.options is defined %}
+    {%      for opt, value in item.meta.options.iteritems() %}
+    {{        opt ~ '=' ~ (value | quote) }}
+    {%      endfor %}
+    {%    endif %}
+    {%  endif %}
+    {%  if item.clone is defined %}
+    {%    if item.clone %} --clone {% endif %}
+    {%  elif item.masterslave is defined %}
+    {{  '--master' }}
+    {%    if item.masterslave.name is defined %}
+    {{      item.masterslave.name }}
+    {%    endif %}
+    {%  elif item.group is defined %}
+    {{  '--group' ~ item.group.name }}
+    {%    if item.group.before is defined %}
+    {{  '--before ' ~ item.group.before }}
+    {%    elif item.group.after is defined %}
+    {{  '--after' ~ item.group.after }}
+    {%    endif %}
+    {%  endif %}
+    {%  if item.disabled is defined %}
+    {%    if item.disabled %} --disabled {% endif %}
+    {%  endif %}
+    {%  if item.wait is defined %}
+    {{    'wait=' ~ item.wait }}
+    {%  endif %}
