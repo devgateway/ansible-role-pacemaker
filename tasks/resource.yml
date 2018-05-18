@@ -15,7 +15,7 @@
     pcs resource create {{ item.id }} {{ item.type }}
     {% if item.options is defined %}
       {% for opt, value in item.options.iteritems() %}
-        {{ opt }}={{ value }}
+        {{ opt }}={{ value | quote }}
       {% endfor %}
     {% endif %}
     {% if item.op is defined %}
@@ -23,7 +23,7 @@
       {% for op in item.op %}
         {{ op.action }}
         {% for opt, value in op.options.iteritems() %}
-          {{ opt }}={{ value }}
+          {{ opt }}={{ value | quote }}
         {% endfor %}
       {% endfor %}
     {% endif %}
@@ -31,7 +31,7 @@
       meta {{ item.meta.id }}
       {% if item.meta.options is defined %}
         {% for opt, value in item.meta.options.iteritems() %}
-          {{ opt }}={{ value }}
+          {{ opt }}={{ value | quote }}
         {% endfor %}
       {% endif %}
     {% endif %}
