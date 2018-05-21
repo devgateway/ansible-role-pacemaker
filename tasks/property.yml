@@ -1,0 +1,29 @@
+---
+- name: Set value for {{ prop_name }}
+  xml:
+    path: "{{ xml_file }}"
+    xpath: |-
+      {%  filter replace('\n', '/') %}
+      /cib/configuration/crm_config
+      cluster_property_set[@id="cib-bootstrap-options"]/nvpair[@name="{{ prop_name }}"]
+      {%- endfilter %}
+    attribute: value
+    value: |-
+      {%  if prop_value is sameas(true) %}
+      true
+      {%- elif prop_value is sameas(false) %}
+      false
+      {%- else %}
+      {{  prop_value }}
+      {%- endif %}
+
+- name: Set ID for {{ prop_name }}
+  xml:
+    path: "{{ xml_file }}"
+    xpath: |-
+      {%  filter replace('\n', '/') %}
+      /cib/configuration/crm_config
+      cluster_property_set[@id="cib-bootstrap-options"]/nvpair[@name="{{ prop_name }}"]
+      {%- endfilter %}
+    attribute: id
+    value: "cib-bootstrap-options-{{ prop_name }}"
