@@ -1,22 +1,22 @@
 ---
-- name: Create primitive {{ id }}
+- name: Create primitive {{ primitive_id }}
   xml:
-    path: "{{ path }}"
-    xpath: '{{ parent }}/primitive[@id="{{ id }}"]'
+    path: "{{ primitive_path }}"
+    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]'
 
-- name: Set type for {{ id }}
+- name: Set type for {{ primitive_id }}
   xml:
-    path: "{{ path }}"
-    xpath: '{{ parent }}/primitive[@id="{{ id }}"]'
+    path: "{{ primitive_path }}"
+    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]'
     attribute: "{{ together.0 }}"
     value: "{{ together.1 }}"
   with_together:
     - ['class', 'provider', 'type']
-    - "{{ type.split(':') }}"
+    - "{{ primitive_type.split(':') }}"
   loop_control:
     loop_var: together
 
-- name: Configure attributes for {{ id }}
+- name: Configure attributes for {{ primitive_id }}
   include_tasks: nvpair.yml
   vars:
     nvpair_path: default.xml
