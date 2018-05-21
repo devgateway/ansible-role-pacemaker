@@ -36,7 +36,12 @@
     {%    endif %}
     {%  endif %}
     {%  if item.clone is defined %}
-    {%    if item.clone %} --clone {% endif %}
+    {%    if item.clone %}
+    {{      'clone' }}
+    {%      for opt, value in item.clone.iteritems() %}
+    {{        opt ~ '=' ~ (value | quote) }}
+    {%      endfor %}
+    {%    endif %}
     {%  elif item.masterslave is defined %}
     {{  '--master' }}
     {%    if item.masterslave.name is defined %}
