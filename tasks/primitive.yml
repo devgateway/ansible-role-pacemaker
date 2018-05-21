@@ -1,0 +1,17 @@
+---
+- name: Create primitive {{ id }}
+  xml:
+    path: "{{ path }}"
+    xpath: '{{ parent }}/primitive[@id="{{ id }}"]'
+
+- name: Set type for {{ id }}
+  xml:
+    path: "{{ path }}"
+    xpath: '{{ parent }}/primitive[@id="{{ id }}"]'
+    attribute: "{{ together.0 }}"
+    value: "{{ together.1 }}"
+  with_together:
+    - ['class', 'provider', 'type']
+    - "{{ type.split(':') }}"
+  loop_control:
+    loop_var: together
