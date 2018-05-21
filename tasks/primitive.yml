@@ -15,3 +15,14 @@
     - "{{ type.split(':') }}"
   loop_control:
     loop_var: together
+
+- name: Configure attributes for {{ id }}
+  include_tasks: nvpair.yml
+  vars:
+    nvpair_path: default.xml
+    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/instance_attributes'
+    nvpair_name: "{{ attribute.key }}"
+    nvpair_value: "{{ attribute.value }}"
+  with_dict: "{{ primitive_options }}"
+  loop_control:
+    loop_var: attribute
