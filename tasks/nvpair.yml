@@ -12,10 +12,3 @@
       {%- else %}
       {{    value }}
       {%- endif %}
-
-- name: Set ID for {{ name }}
-  xml:
-    path: "{{ path }}"
-    xpath: '{{ parent }}/nvpair[@name="{{ name }}"]'
-    attribute: id
-    value: "{{ id_prefix }}-{{ name }}"
