@@ -2,11 +2,7 @@
 - name: Set value for {{ prop_name }}
   xml:
     path: "{{ xml_file }}"
-    xpath: |-
-      {%  filter replace('\n', '/') %}
-      /cib/configuration/crm_config
-      cluster_property_set[@id="cib-bootstrap-options"]/nvpair[@name="{{ prop_name }}"]
-      {%- endfilter %}
+    xpath: '{{ prop_parent }}/nvpair[@name="{{ prop_name }}"]'
     attribute: value
     value: |-
       {%  if prop_value is sameas(true) %}
@@ -20,10 +16,6 @@
 - name: Set ID for {{ prop_name }}
   xml:
     path: "{{ xml_file }}"
-    xpath: |-
-      {%  filter replace('\n', '/') %}
-      /cib/configuration/crm_config
-      cluster_property_set[@id="cib-bootstrap-options"]/nvpair[@name="{{ prop_name }}"]
-      {%- endfilter %}
+    xpath: '{{ prop_parent }}/nvpair[@name="{{ prop_name }}"]'
     attribute: id
-    value: "cib-bootstrap-options-{{ prop_name }}"
+    value: "{{ prop_id_prefix }}-{{ prop_name }}"
