@@ -1,21 +1,21 @@
 ---
-- name: Set value for {{ prop_name }}
+- name: Set value for {{ name }}
   xml:
-    path: "{{ xml_file }}"
-    xpath: '{{ prop_parent }}/nvpair[@name="{{ prop_name }}"]'
+    path: "{{ path }}"
+    xpath: '{{ parent }}/nvpair[@name="{{ name }}"]'
     attribute: value
     value: |-
-      {%  if prop_value is sameas(true) %}
+      {%  if value is sameas(true) %}
       {{    'true' }}
-      {%- elif prop_value is sameas(false) %}
+      {%- elif value is sameas(false) %}
       {{    'false' }}
       {%- else %}
-      {{    prop_value }}
+      {{    value }}
       {%- endif %}
 
-- name: Set ID for {{ prop_name }}
+- name: Set ID for {{ name }}
   xml:
-    path: "{{ xml_file }}"
-    xpath: '{{ prop_parent }}/nvpair[@name="{{ prop_name }}"]'
+    path: "{{ path }}"
+    xpath: '{{ parent }}/nvpair[@name="{{ name }}"]'
     attribute: id
-    value: "{{ prop_id_prefix }}-{{ prop_name }}"
+    value: "{{ id_prefix }}-{{ name }}"
