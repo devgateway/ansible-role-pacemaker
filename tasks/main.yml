@@ -42,6 +42,20 @@
     - corosync
     - pacemaker
 
+- name: Create a temporary file
+  tempfile:
+    suffix: .xml
+  register: pacemaker_config
+  run_once: true
+  check_mode: false
+  changed_when: false
+
+- name: Dump cluster configuration
+  shell: cibadmin --query > {{ pacemaker_config.path | quote }}
+  run_once: true
+  check_mode: false
+  changed_when: false
+
 - name: Configure cluster properties
   run_once: true
   include_tasks: property.yml
