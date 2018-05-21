@@ -6,11 +6,11 @@
     attribute: value
     value: |-
       {%  if prop_value is sameas(true) %}
-      true
+      {{    'true' }}
       {%- elif prop_value is sameas(false) %}
-      false
+      {{    'false' }}
       {%- else %}
-      {{  prop_value }}
+      {{    prop_value }}
       {%- endif %}
 
 - name: Set ID for {{ prop_name }}
