@@ -31,17 +31,16 @@
       {{    ' and not(@role)' }}
       {%- endif -%}
       {{  ']' }}
-    attribute: "{{ property.key }}"
+    attribute: "{{ prop_key }}"
     value: |-
-      {%  if property.value is sameas(true) %}
+      {%  if op_properties[prop_key] is sameas(true) %}
       {{    'true' }}
-      {%- elif property.value is sameas(false) %}
+      {%- elif op_properties[prop_key] is sameas(false) %}
       {{    'false' }}
       {%- else %}
-      {{    property.value }}
+      {{    op_properties[prop_key] }}
       {%- endif %}
-  with_dict: "{{ op_properties }}"
+  loop: "{{ op_properties.keys() | difference(['name', 'role']) }}"
   loop_control:
-    loop_var: property
-    label: "{{ '{' ~ property.key ~ ': ' ~ property.value ~ '}' }}"
-  when: property.key not in ['name', 'role']
+    loop_var: prop_key
+    label: "{{ '{' ~ prop_key ~ ': ' ~ op_properties[prop_key] ~ '}' }}"
