@@ -26,3 +26,14 @@
   with_dict: "{{ primitive_options }}"
   loop_control:
     loop_var: attribute
+
+- name: Configure meta attributes for {{ primitive_id }}
+  include_tasks: nvpair.yml
+  vars:
+    nvpair_path: default.xml
+    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/meta_attributes'
+    nvpair_name: "{{ attribute.key }}"
+    nvpair_value: "{{ attribute.value }}"
+  with_dict: "{{ primitive_meta }}"
+  loop_control:
+    loop_var: attribute
