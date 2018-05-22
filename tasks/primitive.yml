@@ -37,3 +37,12 @@
   with_dict: "{{ primitive_meta }}"
   loop_control:
     loop_var: attribute
+
+- name: Configure operations for {{ primitive_id }}
+  include_tasks: op.yml
+  vars:
+    op_path: default.xml
+    op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/operations'
+  loop: "{{ primitive_op }}"
+  loop_control:
+    loop_var: op_properties

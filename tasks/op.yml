@@ -1,0 +1,47 @@
+---
+- name: |-
+    Create operation {{ op_properties.name | mandatory }}
+    {%- if op_properties.role is defined %}
+    {{  ' with role ' ~ op_properties.role }}
+    {%- endif %}
+  xml:
+    path: "{{ op_path }}"
+    xpath: |-
+      {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
+      {%- if op_properties.role is defined %}
+      {{    ' and @role="' ~ op_properties.role ~ '"' }}
+      {%- else -%}
+      {{    ' and not(@role)' }}
+      {%- endif -%}
+      {{  ']' }}
+
+- name: |-
+    Set properties for {{ op_properties.name }}
+    {%- if op_properties.role is defined %}
+    {{  ' with role ' ~ op_properties.role }}
+    {%- endif %}
+  xml:
+    pretty_print: true
+    path: "{{ op_path }}"
+    xpath: |-
+      {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
+      {%- if op_properties.role is defined %}
+      {{    ' and @role="' ~ op_properties.role ~ '"' }}
+      {%- else -%}
+      {{    ' and not(@role)' }}
+      {%- endif -%}
+      {{  ']' }}
+    attribute: "{{ property.key }}"
+    value: |-
+      {%  if property.value is sameas(true) %}
+      {{    'true' }}
+      {%- elif property.value is sameas(false) %}
+      {{    'false' }}
+      {%- else %}
+      {{    property.value }}
+      {%- endif %}
+  with_dict: "{{ op_properties }}"
+  loop_control:
+    loop_var: property
+    label: "{{ '{' ~ property.key ~ ': ' ~ property.value ~ '}' }}"
+  when: property.key not in ['name', 'role']
