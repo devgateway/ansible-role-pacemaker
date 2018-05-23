@@ -5,7 +5,7 @@
     {{  ' with role ' ~ op_properties.role }}
     {%- endif %}
   xml:
-    path: "{{ op_path }}"
+    path: "{{ xml_path }}"
     xpath: |-
       {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
       {%- if op_properties.role is defined %}
@@ -22,7 +22,7 @@
     {%- endif %}
   xml:
     pretty_print: true
-    path: "{{ op_path }}"
+    path: "{{ xml_path }}"
     xpath: |-
       {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
       {%- if op_properties.role is defined %}

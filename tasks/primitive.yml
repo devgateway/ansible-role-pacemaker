@@ -1,12 +1,12 @@
 ---
 - name: Create primitive {{ primitive_id }}
   xml:
-    path: "{{ primitive_path }}"
+    path: "{{ xml_path }}"
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]'
 
 - name: Set type for {{ primitive_id }}
   xml:
-    path: "{{ primitive_path }}"
+    path: "{{ xml_path }}"
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]'
     attribute: "{{ together.0 }}"
     value: "{{ together.1 }}"
@@ -19,7 +19,6 @@
 - name: Configure attributes for {{ primitive_id }}
   include_tasks: nvpair.yml
   vars:
-    nvpair_path: default.xml
     nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/instance_attributes'
     nvpair_name: "{{ attribute.key }}"
     nvpair_value: "{{ attribute.value }}"
@@ -30,7 +29,6 @@
 - name: Configure meta attributes for {{ primitive_id }}
   include_tasks: nvpair.yml
   vars:
-    nvpair_path: default.xml
     nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/meta_attributes'
     nvpair_name: "{{ attribute.key }}"
     nvpair_value: "{{ attribute.value }}"
@@ -41,7 +39,6 @@
 - name: Configure operations for {{ primitive_id }}
   include_tasks: op.yml
   vars:
-    op_path: default.xml
     op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/operations'
   loop: "{{ primitive_op }}"
   loop_control:

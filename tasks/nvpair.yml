@@ -1,7 +1,7 @@
 ---
 - name: Set value for {{ nvpair_name }}
   xml:
-    path: "{{ nvpair_path }}"
+    path: "{{ xml_path }}"
     xpath: '{{ nvpair_parent }}/nvpair[@name="{{ nvpair_name }}"]'
     attribute: value
     value: |-
