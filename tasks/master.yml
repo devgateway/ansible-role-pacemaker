@@ -1,0 +1,27 @@
+---
+- name: Create multi-state resource {{ master.key }}
+  xml:
+    path: "{{ xml_path }}"
+    xpath: "/cib/configuration/resources/master[@id='{{ master.key }}']"
+
+- name: Configure attributes for {{ master.key }}
+  include_tasks: nvpair.yml
+  vars:
+    nvpair_parent: "/cib/configuration/resources/master[@id='{{ master.key }}']/meta_attributes"
+  with_dict: "{{ master.value.meta | default({}) }}"
+  loop_control:
+    loop_var: nvpair
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+
+- name: Create resources in {{ master.key }}
+  include_tasks: primitive.yml
+  vars:
+    primitive_parent: "/cib/configuration/resources/master[@id='{{ master.key }}']"
+    primitive_id: "{{ resource.id }}"
+    primitive_type: "{{ resource.type }}"
+    primitive_options: "{{ resource.options | default({}) }}"
+    primitive_meta: "{{ resource.meta | default({}) }}"
+    primitive_op: "{{ resource.op }}"
+  loop: "{{ master.value.resources | default([]) }}"
+  loop_control:
+    loop_var: resource
