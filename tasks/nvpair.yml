@@ -1,5 +1,13 @@
 ---
-- name: Set value for {{ nvpair.key }}
+- name: |-
+    {{  'Set ' ~ nvpair.key ~ ': ' }}
+    {%- if nvpair.value is sameas(true) %}
+    {{    'true' }}
+    {%- elif nvpair.value is sameas(false) %}
+    {{    'false' }}
+    {%- else %}
+    {{    nvpair.value }}
+    {%- endif %}
   xml:
     path: "{{ xml_path }}"
     xpath: '{{ nvpair_parent }}/nvpair[@name="{{ nvpair.key }}"]'
