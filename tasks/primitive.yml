@@ -1,41 +1,41 @@
 ---
-- name: Create primitive {{ primitive_id }}
+- name: Create primitive {{ primitive.key }}
   xml:
     path: "{{ xml_path }}"
-    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]'
+    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
 
-- name: Set type for {{ primitive_id }}
+- name: Set type for {{ primitive.key }}
   xml:
     path: "{{ xml_path }}"
-    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]'
+    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
     attribute: "{{ together.0 }}"
     value: "{{ together.1 }}"
   with_together:
     - ['class', 'provider', 'type']
-    - "{{ primitive_type.split(':') }}"
+    - "{{ primitive.value.type.split(':') }}"
   loop_control:
     loop_var: together
 
-- name: Configure attributes for {{ primitive_id }}
+- name: Configure attributes for {{ primitive.key }}
   include_tasks: nvpair.yml
   vars:
-    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/instance_attributes'
-  with_dict: "{{ primitive_options }}"
+    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/instance_attributes'
+  with_dict: "{{ primitive.value.options | default({}) }}"
   loop_control:
     loop_var: nvpair
 
-- name: Configure meta attributes for {{ primitive_id }}
+- name: Configure meta attributes for {{ primitive.key }}
   include_tasks: nvpair.yml
   vars:
-    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/meta_attributes'
-  with_dict: "{{ primitive_meta }}"
+    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/meta_attributes'
+  with_dict: "{{ primitive.value.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
 
-- name: Configure operations for {{ primitive_id }}
+- name: Configure operations for {{ primitive.key }}
   include_tasks: op.yml
   vars:
-    op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/operations'
-  loop: "{{ primitive_op }}"
+    op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/operations'
+  loop: "{{ primitive.value.op | default([]) }}"
   loop_control:
     loop_var: op_properties
