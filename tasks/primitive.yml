@@ -20,21 +20,17 @@
   include_tasks: nvpair.yml
   vars:
     nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/instance_attributes'
-    nvpair_name: "{{ attribute.key }}"
-    nvpair_value: "{{ attribute.value }}"
   with_dict: "{{ primitive_options }}"
   loop_control:
-    loop_var: attribute
+    loop_var: nvpair
 
 - name: Configure meta attributes for {{ primitive_id }}
   include_tasks: nvpair.yml
   vars:
     nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive_id }}"]/meta_attributes'
-    nvpair_name: "{{ attribute.key }}"
-    nvpair_value: "{{ attribute.value }}"
   with_dict: "{{ primitive_meta }}"
   loop_control:
-    loop_var: attribute
+    loop_var: nvpair
 
 - name: Configure operations for {{ primitive_id }}
   include_tasks: op.yml

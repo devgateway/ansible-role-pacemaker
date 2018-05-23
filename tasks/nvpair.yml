@@ -1,14 +1,14 @@
 ---
-- name: Set value for {{ nvpair_name }}
+- name: Set value for {{ nvpair.key }}
   xml:
     path: "{{ xml_path }}"
-    xpath: '{{ nvpair_parent }}/nvpair[@name="{{ nvpair_name }}"]'
+    xpath: '{{ nvpair_parent }}/nvpair[@name="{{ nvpair.key }}"]'
     attribute: value
     value: |-
-      {%  if nvpair_value is sameas(true) %}
+      {%  if nvpair.value is sameas(true) %}
       {{    'true' }}
-      {%- elif nvpair_value is sameas(false) %}
+      {%- elif nvpair.value is sameas(false) %}
       {{    'false' }}
       {%- else %}
-      {{    nvpair_value }}
+      {{    nvpair.value }}
       {%- endif %}
