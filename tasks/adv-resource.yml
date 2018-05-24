@@ -17,6 +17,7 @@
   loop_control:
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+  when: resource.value.type != 'group'
 
 - name: Create resources in {{ resource.key }}
   include_tasks: primitive.yml
