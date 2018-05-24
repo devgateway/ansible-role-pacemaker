@@ -21,7 +21,6 @@
     {{  ' with role ' ~ op_properties.role }}
     {%- endif %}
   xml:
-    pretty_print: true
     path: "{{ xml_path }}"
     xpath: |-
       {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
