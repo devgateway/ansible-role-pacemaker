@@ -55,23 +55,3 @@
   run_once: true
   check_mode: false
   changed_when: false
-
-- name: Configure cluster properties
-  run_once: true
-  include_tasks: property.yml
-  with_dict: "{{ pacemaker_properties | default({}) }}"
-
-- name: Configure resource defaults
-  run_once: true
-  include_tasks: resource-defaults.yml
-  with_dict: "{{ pacemaker_resource_defaults | default({}) }}"
-
-- name: Configure cluster resources
-  run_once: true
-  include_tasks: resource.yml
-  with_items: "{{ pacemaker_resources | default([]) }}"
-
-- name: Apply resource constraints
-  include_tasks: constraint.yml
-  run_once: true
-  with_items: "{{ pacemaker_constraints | default([]) }}"
