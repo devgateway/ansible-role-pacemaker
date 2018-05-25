@@ -1,0 +1,45 @@
+---
+- name: |-
+    Create operation {{ op_properties.name | mandatory }}
+    {%- if op_properties.role is defined %}
+    {{  ' with role ' ~ op_properties.role }}
+    {%- endif %}
+  xml:
+    path: "{{ xml_path }}"
+    xpath: |-
+      {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
+      {%- if op_properties.role is defined %}
+      {{    ' and @role="' ~ op_properties.role ~ '"' }}
+      {%- else -%}
+      {{    ' and not(@role)' }}
+      {%- endif -%}
+      {{  ']' }}
+
+- name: |-
+    Set properties for {{ op_properties.name }}
+    {%- if op_properties.role is defined %}
+    {{  ' with role ' ~ op_properties.role }}
+    {%- endif %}
+  xml:
+    path: "{{ xml_path }}"
+    xpath: |-
+      {{  op_parent ~ '/op[@name="' ~ op_properties.name ~ '"' }}
+      {%- if op_properties.role is defined %}
+      {{    ' and @role="' ~ op_properties.role ~ '"' }}
+      {%- else -%}
+      {{    ' and not(@role)' }}
+      {%- endif -%}
+      {{  ']' }}
+    attribute: "{{ prop_key }}"
+    value: |-
+      {%  if op_properties[prop_key] is sameas(true) %}
+      {{    'true' }}
+      {%- elif op_properties[prop_key] is sameas(false) %}
+      {{    'false' }}
+      {%- else %}
+      {{    op_properties[prop_key] }}
+      {%- endif %}
+  loop: "{{ op_properties.keys() | difference(['name', 'role']) }}"
+  loop_control:
+    loop_var: prop_key
+    label: "{{ '{' ~ prop_key ~ ': ' ~ op_properties[prop_key] ~ '}' }}"
