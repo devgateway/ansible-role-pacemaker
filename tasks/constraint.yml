@@ -12,3 +12,30 @@
       {{    ['first', 'then'] | map('extract', constraint) | list | to_json | hash('sha1') }}
       {%- endif -%}
       {{  "']" }}
+
+- name: Set constraint properties
+  xml:
+    path: "{{ xml_path }}"
+    xpath: |-
+      {{  "/cib/configuration/constraints/rsc_" ~ constraint.type ~ "[@id='id_" }}
+      {%- if constraint.type == 'location' %}
+      {{    ['rsc', 'node'] | map('extract', constraint) | list | to_json | hash('sha1') }}
+      {%- elif constraint.type == 'colocation' %}
+      {{    ['rsc', 'with-rsc'] | map('extract', constraint) | list | to_json | hash('sha1') }}
+      {%- else %}
+      {{    ['first', 'then'] | map('extract', constraint) | list | to_json | hash('sha1') }}
+      {%- endif -%}
+      {{  "']" }}
+    attribute: "{{ attr_name }}"
+    value: |-
+      {%  if constraint[attr_name] is sameas(true) %}
+      {{    'true' }}
+      {%- elif constraint[attr_name] is sameas(false) %}
+      {{    'false' }}
+      {%- else %}
+      {{    constraint[attr_name] }}
+      {%- endif %}
+  loop: "{{ constraint.keys() | difference(['type']) }}"
+  loop_control:
+    loop_var: attr_name
+    label: "{{ '{' ~ attr_name ~ ': ' ~ constraint[attr_name] ~ '}' }}"
