@@ -3,6 +3,7 @@
   xml:
     path: "{{ xml_path }}"
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
+  notify: Push cluster configuration
 
 - name: Set type for {{ primitive.key }}
   xml:
@@ -15,6 +16,7 @@
     - "{{ primitive.value.type.split(':') }}"
   loop_control:
     loop_var: together
+  notify: Push cluster configuration
 
 - name: Configure attributes for {{ primitive.key }}
   include_tasks: nvpair.yml
@@ -23,6 +25,7 @@
   with_dict: "{{ primitive.value.options | default({}) }}"
   loop_control:
     loop_var: nvpair
+  notify: Push cluster configuration
 
 - name: Configure meta attributes for {{ primitive.key }}
   include_tasks: nvpair.yml
@@ -31,6 +34,7 @@
   with_dict: "{{ primitive.value.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
+  notify: Push cluster configuration
 
 - name: Configure operations for {{ primitive.key }}
   include_tasks: op.yml
@@ -39,3 +43,4 @@
   loop: "{{ primitive.value.op | default([]) }}"
   loop_control:
     loop_var: op_properties
+  notify: Push cluster configuration

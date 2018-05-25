@@ -14,6 +14,7 @@
       {{    ' and not(@role)' }}
       {%- endif -%}
       {{  ']' }}
+  notify: Push cluster configuration
 
 - name: |-
     Set properties for {{ op_properties.name }}
@@ -43,3 +44,4 @@
   loop_control:
     loop_var: prop_key
     label: "{{ '{' ~ prop_key ~ ': ' ~ op_properties[prop_key] ~ '}' }}"
+  notify: Push cluster configuration

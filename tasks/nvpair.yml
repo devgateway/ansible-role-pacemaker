@@ -20,3 +20,4 @@
       {%- else %}
       {{    nvpair.value }}
       {%- endif %}
+  notify: Push cluster configuration
