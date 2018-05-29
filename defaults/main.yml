@@ -1,2 +1,3 @@
 ---
+pacemaker_cluster_name: hacluster
 pacemaker_user: hacluster
