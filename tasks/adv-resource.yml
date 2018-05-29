@@ -3,7 +3,6 @@
   xml:
     path: "{{ xml_path }}"
     xpath: "/cib/configuration/resources/{{ resource.value.type }}[@id='{{ resource.key }}']"
-  notify: Push cluster configuration
 
 - name: Configure attributes for {{ resource.key }}
   include_tasks: nvpair.yml
@@ -19,7 +18,6 @@
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
   when: resource.value.type != 'group'
-  notify: Push cluster configuration
 
 - name: Create resources in {{ resource.key }}
   include_tasks: primitive.yml
@@ -32,4 +30,3 @@
   with_dict: "{{ resource.value.resources | default({}) }}"
   loop_control:
     loop_var: primitive
-  notify: Push cluster configuration

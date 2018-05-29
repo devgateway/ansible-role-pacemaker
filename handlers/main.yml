@@ -1,9 +1,0 @@
----
-- name: Push cluster configuration
-  command: cibadmin --replace --xml-file {{ pacemaker_config.path | quote }}
-  notify: Clean up XML config
-
-- name: Clean up XML config
-  file:
-    path: "{{ pacemaker_config.path }}"
-    state: absent

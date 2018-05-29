@@ -12,7 +12,6 @@
       {{    ['first', 'then'] | map('extract', constraint) | list | to_json | hash('sha1') }}
       {%- endif -%}
       {{  "']" }}
-  notify: Push cluster configuration
 
 - name: Set constraint properties
   xml:
@@ -40,4 +39,3 @@
   loop_control:
     loop_var: attr_name
     label: "{{ '{' ~ attr_name ~ ': ' ~ constraint[attr_name] ~ '}' }}"
-  notify: Push cluster configuration
