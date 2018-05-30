@@ -16,16 +16,16 @@
     xpath: >-
       {{ op_parent ~ ('/op[@id="%s-%s-interval-%s"]'
       | format(parent_id, op_properties.name, op_properties.interval)) }}
-    attribute: "{{ prop_key }}"
+    attribute: "{{ property.key }}"
     value: |-
-      {%  if op_properties[prop_key] is sameas(true) %}
+      {%  if property.value is sameas(true) %}
       {{    'true' }}
-      {%- elif op_properties[prop_key] is sameas(false) %}
+      {%- elif property.value is sameas(false) %}
       {{    'false' }}
       {%- else %}
-      {{    op_properties[prop_key] }}
+      {{    property.value }}
       {%- endif %}
-  loop: "{{ op_properties.keys() }}"
+  with_dict: "{{ op_properties }}"
   loop_control:
-    loop_var: prop_key
-    label: "{{ '{' ~ prop_key ~ ': ' ~ op_properties[prop_key] ~ '}' }}"
+    loop_var: property
+    label: "{{ '{' ~ property.key ~ ': ' ~ property.value ~ '}' }}"
