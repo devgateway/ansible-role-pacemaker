@@ -84,6 +84,12 @@
     get_mime: false
   register: after
 
+- name: Verify cluster configuration
+  command: crm_verify --verbose --xml-file={{ pacemaker_config.path | quote }}
+  when: before.stat.checksum != after.stat.checksum
+  changed_when: false
+  check_mode: false
+
 - name: Push cluster configuration
   command: cibadmin --replace --xml-file {{ pacemaker_config.path | quote }}
   when: before.stat.checksum != after.stat.checksum
