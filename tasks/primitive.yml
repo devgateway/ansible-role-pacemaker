@@ -19,7 +19,11 @@
 - name: Configure attributes for {{ primitive.key }}
   include_tasks: nvpair.yml
   vars:
-    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/instance_attributes'
+    nvpair_parent: >-
+      {{ primitive_parent ~
+      ('/primitive[@id="%s"]/instance_attributes[@id="%s-instance_attributes"]'
+      | format(primitive.key, primitive.key)) }}
+    parent_id: "{{ primitive.key }}-instance_attributes"
   with_dict: "{{ primitive.value.options | default({}) }}"
   loop_control:
     loop_var: nvpair
@@ -27,7 +31,11 @@
 - name: Configure meta attributes for {{ primitive.key }}
   include_tasks: nvpair.yml
   vars:
-    nvpair_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/meta_attributes'
+    nvpair_parent: >-
+      {{ primitive_parent ~
+      ('/primitive[@id="%s"]/meta_attributes[@id="%s-meta_attributes"]'
+      | format(primitive.key, primitive.key)) }}
+    parent_id: "{{ primitive.key }}-meta_attributes"
   with_dict: "{{ primitive.value.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
@@ -36,6 +44,7 @@
   include_tasks: op.yml
   vars:
     op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/operations'
+    parent_id: "{{ primitive.key }}"
   loop: "{{ primitive.value.op | default([]) }}"
   loop_control:
     loop_var: op_properties

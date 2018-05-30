@@ -10,7 +10,9 @@
     {%- endif %}
   xml:
     path: "{{ xml_path }}"
-    xpath: '{{ nvpair_parent }}/nvpair[@name="{{ nvpair.key }}"]'
+    xpath: >-
+      {{ nvpair_parent ~
+      ('/nvpair[@name="%s" and @id="%s-%s"]' | format(nvpair.key, parent_id, nvpair.key)) }}
     attribute: value
     value: |-
       {%  if nvpair.value is sameas(true) %}
