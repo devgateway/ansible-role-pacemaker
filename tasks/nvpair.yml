@@ -12,7 +12,8 @@
     path: "{{ xml_path }}"
     xpath: >-
       {{ nvpair_parent ~
-      ('/nvpair[@name="%s" and @id="%s-%s"]' | format(nvpair.key, parent_id, nvpair.key)) }}
+      ('/nvpair[@name="%(name)s" and @id="%(parent)s-%(name)s"]'
+      | format(name = nvpair.key, parent = parent_id)) }}
     attribute: value
     value: |-
       {%  if nvpair.value is sameas(true) %}

@@ -5,8 +5,8 @@
   xml:
     path: "{{ xml_path }}"
     xpath: >-
-      {{ op_parent ~ ('/op[@id="%s-%s-interval-%s"]'
-      | format(parent_id, op_properties.name, op_properties.interval)) }}
+      {{ op_parent ~ ('/op[@id="%(parent)s-%(name)s-interval-%(int)s"]'
+      | format(parent = parent_id, name = op_properties.name, int = op_properties.interval)) }}
 
 - name: >-
     Set properties for {{ op_properties.name }}
@@ -14,8 +14,8 @@
   xml:
     path: "{{ xml_path }}"
     xpath: >-
-      {{ op_parent ~ ('/op[@id="%s-%s-interval-%s"]'
-      | format(parent_id, op_properties.name, op_properties.interval)) }}
+      {{ op_parent ~ ('/op[@id="%(parent)s-%(name)s-interval-%(int)s"]'
+      | format(parent = parent_id, name = op_properties.name, int = op_properties.interval)) }}
     attribute: "{{ property.key }}"
     value: |-
       {%  if property.value is sameas(true) %}

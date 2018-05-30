@@ -21,8 +21,8 @@
   vars:
     nvpair_parent: >-
       {{ primitive_parent ~
-      ('/primitive[@id="%s"]/instance_attributes[@id="%s-instance_attributes"]'
-      | format(primitive.key, primitive.key)) }}
+      ('/primitive[@id="%(key)s"]/instance_attributes[@id="%(key)s-instance_attributes"]'
+      | format(key = primitive.key)) }}
     parent_id: "{{ primitive.key }}-instance_attributes"
   with_dict: "{{ primitive.value.options | default({}) }}"
   loop_control:
@@ -33,8 +33,8 @@
   vars:
     nvpair_parent: >-
       {{ primitive_parent ~
-      ('/primitive[@id="%s"]/meta_attributes[@id="%s-meta_attributes"]'
-      | format(primitive.key, primitive.key)) }}
+      ('/primitive[@id="%(key)s"]/meta_attributes[@id="%(key)s-meta_attributes"]'
+      | format(key = primitive.key)) }}
     parent_id: "{{ primitive.key }}-meta_attributes"
   with_dict: "{{ primitive.value.meta | default({}) }}"
   loop_control:
