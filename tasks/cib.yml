@@ -11,6 +11,14 @@
   check_mode: false
   changed_when: false
 
+- name: Register configuration checksum
+  stat:
+    path: "{{ pacemaker_config.path }}"
+    get_attributes: false
+    get_checksum: true
+    get_mime: false
+  register: before
+
 - name: Configure cluster properties
   include_tasks: nvpair.yml
   vars:
@@ -58,10 +66,21 @@
   loop_control:
     loop_var: constraint
 
+- name: Verify configuration checksum
+  stat:
+    path: "{{ pacemaker_config.path }}"
+    get_attributes: false
+    get_checksum: true
+    get_mime: false
+  register: after
+
 - name: Push cluster configuration
   command: cibadmin --replace --xml-file {{ pacemaker_config.path | quote }}
+  when: before.stat.checksum != after.stat.checksum
 
-- name: Clean up XML config
+- name: Clean up
   file:
     path: "{{ pacemaker_config.path }}"
     state: absent
+  check_mode: false
+  changed_when: false
