@@ -3,6 +3,7 @@
   xml:
     path: "{{ xml_path }}"
     xpath: "/cib/configuration/resources/{{ resource.value.type }}[@id='{{ resource.key }}']"
+  check_mode: false
 
 - name: Configure attributes for {{ resource.key }}
   include_tasks: nvpair.yml
