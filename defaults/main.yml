@@ -1,3 +1,4 @@
 ---
 pacemaker_cluster_name: hacluster
 pacemaker_user: hacluster
+pacemaker_pretty_xml: false
