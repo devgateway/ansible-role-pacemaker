@@ -9,8 +9,9 @@
   include_tasks: nvpair.yml
   vars:
     nvpair_parent: >-
-      {{ '/cib/configuration/resources[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
-      | format(id = resource.key) }}
+      {{ '/cib/configuration/resources/' ~
+      '%(type)s[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
+      | format(type = resource.value.type, id = resource.key) }}
     parent_id: "{{ resource.key }}"
   with_dict: "{{ resource.value.meta | default({}) }}"
   loop_control:
