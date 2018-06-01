@@ -5,17 +5,16 @@
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
   check_mode: false
 
-- name: Set type for {{ primitive.key }}
+- name: Set {{ primitive.key }} resource agent
   xml:
     path: "{{ xml_path }}"
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
-    attribute: "{{ together.0 }}"
-    value: "{{ together.1 }}"
-  with_together:
-    - ['class', 'provider', 'type']
-    - "{{ primitive.value.type.split(':') }}"
+    attribute: "{{ resource_attr.key }}"
+    value: "{{ resource_attr.value }}"
+  with_dict: "{{ primitive.value.resource }}"
   loop_control:
-    loop_var: together
+    loop_var: resource_attr
+    label: "{{ '{' ~ resource_attr.key ~ ': ' ~ resource_attr.value ~ '}' }}"
   check_mode: false
 
 - name: Configure attributes for {{ primitive.key }}
