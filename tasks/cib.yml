@@ -76,13 +76,34 @@
   loop_control:
     loop_var: constraint
 
-- name: Verify configuration checksum
+- name: Recalculate configuration checksum
   stat:
     path: "{{ pacemaker_config.path }}"
     get_attributes: false
     get_checksum: true
     get_mime: false
   register: after
+
+- name: Read admin epoch
+  xml:
+    path: "{{ pacemaker_config.path }}"
+    xpath: /cib
+    attribute: admin_epoch
+    content: attribute
+  register: xml_result
+  when: before.stat.checksum != after.stat.checksum
+  changed_when: false
+  check_mode: false
+
+- name: Increment admin epoch
+  xml:
+    pretty_print: "{{ pacemaker_pretty_xml }}"
+    path: "{{ pacemaker_config.path }}"
+    xpath: /cib
+    attribute: admin_epoch
+    value: "{{ (xml_result.matches[0].admin_epoch | default(0)) + 1 }}"
+  when: before.stat.checksum != after.stat.checksum
+  check_mode: false
 
 - name: Verify cluster configuration
   command: crm_verify --verbose --xml-file={{ pacemaker_config.path | quote }}
