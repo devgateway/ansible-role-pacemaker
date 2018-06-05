@@ -101,7 +101,7 @@
     path: "{{ pacemaker_config.path }}"
     xpath: /cib
     attribute: admin_epoch
-    value: "{{ (xml_result.matches[0].admin_epoch | default(0)) + 1 }}"
+    value: "{{ (xml_result.matches[0].cib.admin_epoch | default(0) | int) + 1 }}"
   when: before.stat.checksum != after.stat.checksum
   check_mode: false
 
