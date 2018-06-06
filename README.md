@@ -43,9 +43,9 @@ The system user to authenticate PCS nodes with. PCS will authenticate all nodes 
 
 Default: hacluster
 
-#### `pacemaker_properties`
+#### `pacemaker_cluster_options`
 
-Dictionary with cluster properties.
+Dictionary with [cluster-wide options](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-cluster-options.html).
 
 #### `pacemaker_resource_defaults`
 
@@ -104,7 +104,7 @@ being optional.
           vars:
             pacemaker_password: hunter2
             pacemaker_cluster_name: named
-            pacemaker_properties:
+            pacemaker_cluster_options:
               stonith-enabled: false
             pacemaker_simple_resources:
               dns-ip:
@@ -144,7 +144,7 @@ being optional.
           vars:
             pacemaker_password: hunter2
             pacemaker_cluster_name: squid
-            pacemaker_properties:
+            pacemaker_cluster_options:
               stonith-enabled: false
             pacemaker_simple_resources:
               squid-ip:
@@ -191,7 +191,7 @@ wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
             pacemaker_pretty_xml: true
             pacemaker_cluster_name: example
             pacemaker_password: hunter2
-            pacemaker_properties:
+            pacemaker_cluster_options:
               no-quorum-policy: ignore
               stonith-enabled: false
             pacemaker_resource_defaults:
