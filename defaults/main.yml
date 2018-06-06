@@ -2,3 +2,8 @@
 pacemaker_cluster_name: hacluster
 pacemaker_user: hacluster
 pacemaker_pretty_xml: false
+pacemaker_vq_keys:
+  - wait_for_all
+  - auto_tie_breaker
+  - last_man_standing
+  - last_man_standing_window

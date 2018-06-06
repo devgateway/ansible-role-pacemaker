@@ -47,6 +47,10 @@ Default: hacluster
 
 Dictionary with [cluster-wide options](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-cluster-options.html).
 
+#### `pacemaker_votequorum`
+
+Dictionary with votequorum options. See `votequorum(5)`. Boolean values accepted.
+
 #### `pacemaker_resource_defaults`
 
 Dictionary of resource defaults.

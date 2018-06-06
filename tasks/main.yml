@@ -29,7 +29,18 @@
   run_once: true
   command: >
     pcs cluster setup --name {{ pacemaker_cluster_name }}
-    {{ pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
+    {{  pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
+    {%  set vq_options = pacemaker_votequorum | default({}) %}
+    {%  for key in vq_options.keys() | intersect(pacemaker_vq_keys) %}
+    {%    if pacemaker_votequorum[key] is sameas(true) %}
+    {%      set value = 1 %}
+    {%    elif pacemaker_votequorum[key] is sameas(false) %}
+    {%      set value = 0 %}
+    {%    else %}
+    {%      set value = pacemaker_votequorum[key] %}
+    {%    endif %}
+    {{    '--%s=%s' | format(key, value) }}
+    {%  endfor %}
   args:
     creates: /etc/corosync/corosync.conf
 
