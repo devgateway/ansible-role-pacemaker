@@ -141,31 +141,36 @@ being optional.
             pacemaker_password: hunter2
             pacemaker_cluster_name: squid
             pacemaker_properties:
-              stonith_enabled: "false"
-            pacemaker_resources:
-              - id: squid-ip
-                type: "ocf:heartbeat:IPaddr2"
+              stonith-enabled: false
+            pacemaker_simple_resources:
+              squid-ip:
+                resource:
+                  class: ocf
+                  provider: heartbeat
+                  type: IPaddr2
                 options:
                   ip: 192.168.0.200
                   cidr_netmask: 24
                 op:
-                  - action: monitor
-                    options:
-                      interval: 5s
-              - id: squid-srv
-                type: "systemd:squid"
-                op:
-                  - action: monitor
-                    options:
-                      interval: 5s
-                clone: true
+                  - name: monitor
+                    interval: 5s
+            pacemaker_advanced_resources:
+              squid:
+                type: clone
+                resources:
+                  squid-service:
+                    resource:
+                      class: service
+                      type: squid
+                    op:
+                      - name: monitor
+                        interval: 5s
             pacemaker_constraints:
-              - order squid-ip then squid-srv-clone
+              - order squid-ip then squid
 
 ## See also
 
 - [The official Pacemaker documentation](http://clusterlabs.org/doc/)
-- *man pcs(8)*
 
 ## Copyright
 
