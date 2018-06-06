@@ -101,26 +101,32 @@ being optional.
             pacemaker_password: hunter2
             pacemaker_cluster_name: named
             pacemaker_properties:
-              stonith_enabled: "false"
-            pacemaker_resources:
-              - id: dns-ip
-                type: "ocf:heartbeat:IPaddr2"
+              stonith-enabled: false
+            pacemaker_simple_resources:
+              dns-ip:
+                resource:
+                  class: ocf
+                  provider: heartbeat
+                  type: IPaddr2
                 options:
                   ip: 10.0.0.1
                   cidr_netmask: 8
                 op:
-                  - action: monitor
-                    options:
-                      interval: 5s
-              - id: dns-srv
-                type: "systemd:named-chroot"
-                op:
-                  - action: monitor
-                    options:
-                      interval: 5s
-                clone: true
+                  - name: monitor
+                    interval: 5s
+            pacemaker_advanced_resources:
+              dns-clone:
+                type: clone
+                resources:
+                  named:
+                    resource:
+                      class: service
+                      type: named-chroot
+                    op:
+                      - name: monitor
+                        interval: 5s
             pacemaker_constraints:
-              - order dns-ip then dns-srv-clone
+              - order dns-ip then dns-clone
 
 ### Active-active Squid proxy
 
