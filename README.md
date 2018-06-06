@@ -62,6 +62,30 @@ These dictionaries may have the following members.
 cemaker/1.1/html/Pacemaker_Explained/s-resource-options.html#_resource_meta_attributes)
 (RA-nonspecific).
 
+* `op`: a list of dictionaries defining resource operations. The members `name` and `interval` are
+required.
+
+#### `pacemaker_advanced_resources`
+
+A dictionary of advanced (group, clone, or master) resources. Dictionary keys are resource IDs.
+Members may include the following.
+
+* `type`: required, one of: `group`, `clone`, or `master`.
+
+* `meta`: optional, a dictionary of advanced resource meta attributes.
+
+* `resources`: a dictionary of primitive resources, identical to `pacemaker_simple_resources`
+described above.
+
+#### `pacemaker_constraints`
+
+A list of dictionaries defining resource constraints. The following members are required, the rest
+being optional.
+
+* `type`: one of: `location`, `colocation`, or `order`.
+
+* `score`: constraint score (signed integer or +/-INFINITY).
+
 ## Example playbooks
 
 ### Active-active chrooted BIND DNS server
