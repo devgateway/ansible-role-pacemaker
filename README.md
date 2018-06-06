@@ -2,21 +2,29 @@
 
 ## Requirements
 
-This role has been written for and tested on Scientific Linux 7, so it should be applicable to Fedora 19 and later. It might also work in other distros, please share your experience.
+This role has been written for and tested in Scientific Linux 7. It might also work in other
+distros, please share your experience.
 
 ## Role variables
 
+Boolean values in properties (parsed by Pacemaker itself) don't have to be quoted. However,
+resource agents may expect Boolean-like arguments as integers, strings, etc. Such values **must**
+be quoted.
+
 ## Required
+
+#### `pacemaker_password`
+
+The plaintext password for the cluster user. It will be hashed with per-host salt to maintain
+idempotency.
+
+## Optional
 
 #### `pacemaker_cluster_name`
 
 Name of the cluster.
 
-#### `pacemaker_password`
-
-The plaintext password for the cluster user. It will be hashed with per-host salt to maintain idempotency.
-
-## Optional
+Default: `hacluster`.
 
 #### `pacemaker_hosts`
 
@@ -32,26 +40,27 @@ Default: hacluster
 
 #### `pacemaker_properties`
 
-The keys of this dict/hash with underscores correspond to pacemaker properties with hyphens.
+Dictionary with cluster properties.
 
-**Be sure to quote cluster properties!** By default, YAML parser will guess variable types, so the string "false" will be converted to Boolean False and then to string "False". Pacemaker properties are case-sensitive, e.g. "stonith-enabled=False" will be accepted, but STONITH will still be on.
+#### `pacemaker_resource_defaults`
 
-Correct example:
+Dictionary of resource defaults.
 
-    pacemaker_properties:
-      stonith_enabled: "false"
+#### `pacemaker_simple_resources`
 
-#### `pacemaker_resources`
+A dictionary of simple (primitive) resources. Keys are resource IDs. Values are dictionaries.
 
-An array of resource definitions. Each definition is a dict of two mandatory members, *id* (resource name) and *type* (standard:provider:type string, see output of *pcs resource providers*).
+These dictionaries may have the following members.
 
-They can also have optional members like *options* dict, *op* list with operation actions and their options.
+* `resource`: a dictionary defining the resource agent (`class`, `provider`, and `type`). This
+ member is required.
 
-Additionally, there might be mutually exclusive members: Boolean *clone*, or dicts *masterslave* or *group* with their respective options. 
+* `options`: a dictionary of options specific to the resource agent. Remember to quote values in the
+ format that the RA expects.
 
-Finally, the values *disabled* and *wait* might be present.
-
-For the detailed descriptions check out the resources below.
+* `meta`: a dictionary of resource [meta attributes](https://clusterlabs.org/pacemaker/doc/en-US/Pa
+cemaker/1.1/html/Pacemaker_Explained/s-resource-options.html#_resource_meta_attributes)
+(RA-nonspecific).
 
 ## Example playbooks
 
