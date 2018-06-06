@@ -1,5 +1,10 @@
 # Pacemaker role for Ansible
 
+This is a complete rewrite of the initial version. This role save cluster configuration (CIB) in an
+XML file, then uses Ansible XML module to adjust it, and finally verifies and pushes the CIB.
+
+This role is idempotent, and supports check mode.
+
 ## Requirements
 
 This role has been written for and tested in Scientific Linux 7. It might also work in other
@@ -172,7 +177,8 @@ being optional.
 
 The cluster runs two Postgres nodes with synchronous replication. Wherever master is, a virtual IP
 address is running, where NAT is pointing at. Nginx and the webapp are running at the same node, but
-not the other, in order to save resources.
+not the other, in order to save resources. Based on [the example from Clusterlabs
+wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
 
     ---
     - hosts:
