@@ -14,7 +14,7 @@
   user:
     name: "{{ pacemaker_user }}"
     system: true
-    password: "{{ pacemaker_password | password_hash('sha512', ansible_hostname) }}"
+    password: "{{ pacemaker_password | mandatory | password_hash('sha512', ansible_hostname) }}"
 
 - name: Authenticate all nodes
   command: >
@@ -38,7 +38,7 @@
     name: "{{ item }}"
     enabled: true
     state: started
-  with_items:
+  loop:
     - corosync
     - pacemaker
 
