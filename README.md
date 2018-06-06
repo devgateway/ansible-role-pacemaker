@@ -63,8 +63,7 @@ These dictionaries may have the following members.
 * `options`: a dictionary of options specific to the resource agent. Remember to quote values in the
  format that the RA expects.
 
-* `meta`: a dictionary of resource [meta attributes](https://clusterlabs.org/pacemaker/doc/en-US/Pa
-cemaker/1.1/html/Pacemaker_Explained/s-resource-options.html#_resource_meta_attributes)
+* `meta`: a dictionary of resource [meta attributes](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-resource-options.html#_resource_meta_attributes)
 (RA-nonspecific).
 
 * `op`: a list of dictionaries defining resource operations. The members `name` and `interval` are
