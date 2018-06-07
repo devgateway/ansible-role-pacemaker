@@ -1,6 +1,6 @@
 # Pacemaker role for Ansible
 
-This is a complete rewrite of the initial version. This role save cluster configuration (CIB) in an
+This is a complete rewrite of the initial version. This role saves cluster configuration (CIB) in an
 XML file, then uses Ansible XML module to adjust it, and finally verifies and pushes the CIB.
 
 This role is idempotent, and supports check mode.
