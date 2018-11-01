@@ -27,7 +27,7 @@
     pcs cluster auth
     {{ pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
     -u {{ pacemaker_user }}
-    -p {{ pacemaker_password }}
+    -p {{ pacemaker_password | quote }}
   run_once: true
   args:
     creates: /var/lib/pcsd/tokens
@@ -35,7 +35,7 @@
 - name: Setup message bus
   run_once: true
   command: >
-    pcs cluster setup --name {{ pacemaker_cluster_name }}
+    pcs cluster setup --name {{ pacemaker_cluster_name | quote }}
     {{  pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
     {%  set vq_options = pacemaker_votequorum | default({}) %}
     {%  for key in vq_options.keys() | intersect(pacemaker_vq_keys) %}
