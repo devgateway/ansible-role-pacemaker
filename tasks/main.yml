@@ -10,17 +10,24 @@
     enabled: true
     state: started
 
+- name: Generate a password for the user {{ pacemaker_user }}
+  set_fact:
+    pacemaker_password: "{{ ansible_machine_id | to_uuid }}"
+  run_once: true
+  when: pacemaker_password is not defined
+
 - name: Set password for the user {{ pacemaker_user }}
   user:
     name: "{{ pacemaker_user }}"
     system: true
-    password: "{{ pacemaker_password | mandatory | password_hash('sha512', ansible_hostname) }}"
+    password: "{{ pacemaker_password | password_hash('sha512', ansible_hostname) }}"
 
 - name: Authenticate all nodes
   command: >
     pcs cluster auth
     {{ pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
-    -u {{ pacemaker_user }} -p {{ pacemaker_password }}
+    -u {{ pacemaker_user }}
+    -p {{ pacemaker_password }}
   run_once: true
   args:
     creates: /var/lib/pcsd/tokens
