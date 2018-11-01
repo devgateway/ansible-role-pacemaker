@@ -16,14 +16,7 @@ Boolean values in properties (parsed by Pacemaker itself) don't have to be quote
 resource agents may expect Boolean-like arguments as integers, strings, etc. Such values **must**
 be quoted.
 
-## Required
-
-#### `pacemaker_password`
-
-The plaintext password for the cluster user. It will be hashed with per-host salt to maintain
-idempotency.
-
-## Optional
+### Optional
 
 #### `pacemaker_cluster_name`
 
@@ -36,6 +29,14 @@ Default: `hacluster`.
 The list of cluster members.
 
 Default: `ansible_play_batch`
+
+#### `pacemaker_password`
+
+The plaintext password for the cluster user. If omitted, will be derived from
+`ansible_machine_id` of the first host in the play batch. This password is only used in the initial
+authentication of the nodes.
+
+Default: `ansible_machine_id | to_uuid`
 
 #### `pacemaker_user`
 
