@@ -60,6 +60,14 @@
   loop_control:
     loop_var: primitive
 
+- name: Configure resource groups
+  include_tasks: group.yml
+  vars:
+    xml_path: "{{ pacemaker_config.path }}"
+  with_dict: "{{ pacemaker_resource_groups | default({}) }}"
+  loop_control:
+    loop_var: group
+
 - name: Configure advanced resources
   include_tasks: adv-resource.yml
   vars:
