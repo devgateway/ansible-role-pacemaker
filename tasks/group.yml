@@ -1,0 +1,6 @@
+---
+- name: Create resource group {{ group.key }}
+  xml:
+    path: "{{ xml_path }}"
+    xpath: "/cib/configuration/resources/group[@id='{{ group.key }}']"
+  check_mode: false
