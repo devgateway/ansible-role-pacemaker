@@ -86,6 +86,11 @@ Members may include the following.
 * `resources`: a dictionary of primitive resources, identical to `pacemaker_simple_resources`
 described above.
 
+#### `pacemaker_resource_groups`
+
+A dictionary of resource groups. Values are lists of primitive resources. Please note, that although
+group members are created in order, they cannot be reordered later.
+
 #### `pacemaker_constraints`
 
 A list of dictionaries defining resource constraints. The following members are required, the rest
