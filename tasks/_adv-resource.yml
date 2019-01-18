@@ -6,7 +6,7 @@
   check_mode: false
 
 - name: Configure attributes for {{ resource.key }}
-  include_tasks: nvpair.yml
+  include_tasks: _nvpair.yml
   vars:
     nvpair_parent: >-
       {{ '/cib/configuration/resources/' ~
@@ -20,7 +20,7 @@
   when: resource.value.type != 'group'
 
 - name: Create resources in {{ resource.key }}
-  include_tasks: primitive.yml
+  include_tasks: _primitive.yml
   vars:
     primitive_parent: >-
       {{ '/cib/configuration/resources/%(type)s[@id="%(id)s"]'

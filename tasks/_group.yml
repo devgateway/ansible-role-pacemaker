@@ -6,7 +6,7 @@
   check_mode: false
 
 - name: Create resources in {{ group.key }}
-  include_tasks: group-element.yml
+  include_tasks: _group-element.yml
   vars:
     primitive_parent: /cib/configuration/resources/group[@id='{{ group.key }}']
     parent_id: "{{ group.key }}"

@@ -62,4 +62,4 @@
 
 - name: Set up CIB XML
   run_once: true
-  include_tasks: cib.yml
+  include_tasks: _cib.yml

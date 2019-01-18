@@ -18,7 +18,7 @@
   check_mode: false
 
 - name: Configure attributes for {{ primitive.key }}
-  include_tasks: nvpair.yml
+  include_tasks: _nvpair.yml
   vars:
     nvpair_parent: >-
       {{ primitive_parent ~
@@ -30,7 +30,7 @@
     loop_var: nvpair
 
 - name: Configure meta attributes for {{ primitive.key }}
-  include_tasks: nvpair.yml
+  include_tasks: _nvpair.yml
   vars:
     nvpair_parent: >-
       {{ primitive_parent ~
@@ -42,7 +42,7 @@
     loop_var: nvpair
 
 - name: Configure operations for {{ primitive.key }}
-  include_tasks: op.yml
+  include_tasks: _op.yml
   vars:
     op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/operations'
     parent_id: "{{ primitive.key }}"

@@ -30,7 +30,7 @@
   register: before
 
 - name: Configure cluster properties
-  include_tasks: nvpair.yml
+  include_tasks: _nvpair.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
     nvpair_parent: /cib/configuration/crm_config/cluster_property_set[@id="cib-bootstrap-options"]
@@ -41,7 +41,7 @@
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
 
 - name: Configure resource defaults
-  include_tasks: nvpair.yml
+  include_tasks: _nvpair.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
     nvpair_parent: /cib/configuration/rsc_defaults/meta_attributes[@id="rsc_defaults-options"]
@@ -52,7 +52,7 @@
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
 
 - name: Configure simple resources
-  include_tasks: primitive.yml
+  include_tasks: _primitive.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
     primitive_parent: /cib/configuration/resources
@@ -61,7 +61,7 @@
     loop_var: primitive
 
 - name: Configure resource groups
-  include_tasks: group.yml
+  include_tasks: _group.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
   with_dict: "{{ pacemaker_resource_groups | default({}) }}"
@@ -69,7 +69,7 @@
     loop_var: group
 
 - name: Configure advanced resources
-  include_tasks: adv-resource.yml
+  include_tasks: _adv-resource.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
   with_dict: "{{ pacemaker_advanced_resources | default({}) }}"
@@ -77,7 +77,7 @@
     loop_var: resource
 
 - name: Configure resource constraints
-  include_tasks: constraint.yml
+  include_tasks: _constraint.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
   loop: "{{ pacemaker_constraints | default([]) }}"
