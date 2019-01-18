@@ -1,0 +1,82 @@
+---
+- name: Enable and start PCS daemon
+  service:
+    name: pcsd
+    enabled: true
+    state: started
+
+- name: Generate a password for the user {{ pacemaker_user }}
+  set_fact:
+    pacemaker_password: "{{ ansible_machine_id | to_uuid }}"
+  run_once: true
+  when: pacemaker_password is not defined
+
+- name: Set password for the user {{ pacemaker_user }}
+  user:
+    name: "{{ pacemaker_user }}"
+    system: true
+    password: "{{ pacemaker_password | password_hash('sha512', ansible_hostname) }}"
+
+- name: Authenticate all nodes
+  command: >
+    pcs cluster auth
+    {{ pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
+    -u {{ pacemaker_user }}
+    -p {{ pacemaker_password | quote }}
+  run_once: true
+  args:
+    creates: /var/lib/pcsd/tokens
+
+- name: Setup message bus
+  run_once: true
+  command: >
+    pcs cluster setup --name {{ pacemaker_cluster_name | quote }}
+    {{  pacemaker_hosts | default(ansible_play_batch) | join(' ') }}
+    {%  set vq_options = pacemaker_votequorum | default({}) %}
+    {%  for key in vq_options.keys() | intersect(pacemaker_vq_keys) %}
+    {%    if pacemaker_votequorum[key] is sameas(true) %}
+    {%      set value = 1 %}
+    {%    elif pacemaker_votequorum[key] is sameas(false) %}
+    {%      set value = 0 %}
+    {%    else %}
+    {%      set value = pacemaker_votequorum[key] %}
+    {%    endif %}
+    {{    '--%s=%s' | format(key, value) }}
+    {%  endfor %}
+  args:
+    creates: /etc/corosync/corosync.conf
+
+- name: Start all nodes
+  service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - corosync
+    - pacemaker
+
+- include_tasks: pre.yml
+
+- name: Configure cluster properties
+  include_tasks: _nvpair.yml
+  vars:
+    xml_path: "{{ pacemaker_config.path }}"
+    nvpair_parent: /cib/configuration/crm_config/cluster_property_set[@id="cib-bootstrap-options"]
+    parent_id: cib-bootstrap-options
+  with_dict: "{{ pacemaker_cluster_options | default({}) }}"
+  loop_control:
+    loop_var: nvpair
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+
+- name: Configure resource defaults
+  include_tasks: _nvpair.yml
+  vars:
+    xml_path: "{{ pacemaker_config.path }}"
+    nvpair_parent: /cib/configuration/rsc_defaults/meta_attributes[@id="rsc_defaults-options"]
+    parent_id: rsc_defaults-options
+  with_dict: "{{ pacemaker_resource_defaults | default({}) }}"
+  loop_control:
+    loop_var: nvpair
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+
+- include_tasks: post.yml
