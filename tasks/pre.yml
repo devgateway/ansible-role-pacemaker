@@ -1,0 +1,30 @@
+---
+- name: Create a temporary file
+  tempfile:
+    suffix: .xml
+  register: pacemaker_config
+  check_mode: false
+  changed_when: false
+
+- name: Dump cluster configuration
+  shell: cibadmin --query > {{ pacemaker_config.path | quote }}
+  check_mode: false
+  changed_when: false
+  ignore_errors: "{{ ansible_check_mode }}"
+  register: dump_result
+
+- name: Install a sample cluster configuration
+  copy:
+    dest: "{{ pacemaker_config.path }}"
+    content: <cib />
+  when: ansible_check_mode and dump_result.rc != 0
+  check_mode: false
+  changed_when: false
+
+- name: Register configuration checksum
+  stat:
+    path: "{{ pacemaker_config.path }}"
+    get_attributes: false
+    get_checksum: true
+    get_mime: false
+  register: before
