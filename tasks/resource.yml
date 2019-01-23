@@ -1,0 +1,11 @@
+---
+- include_tasks: pre.yml
+
+- name: Configure simple resource
+  include_tasks: _primitive.yml
+  vars:
+    xml_path: "{{ pacemaker_config.path }}"
+    primitive_parent: /cib/configuration/resources
+    primitive: "{{ pcmk_resource }}"
+
+- include_tasks: post.yml
