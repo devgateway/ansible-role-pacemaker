@@ -20,7 +20,7 @@
 - name: Authenticate all nodes
   command: >
     pcs cluster auth
-    {{ pcmk_hosts | default(ansible_play_batch) | join(' ') }}
+    {{ ansible_play_batch | join(' ') }}
     -u {{ pcmk_user }}
     -p {{ pcmk_password | quote }}
   run_once: true
@@ -31,7 +31,7 @@
   run_once: true
   command: >
     pcs cluster setup --name {{ pcmk_cluster_name | quote }}
-    {{  pcmk_hosts | default(ansible_play_batch) | join(' ') }}
+    {{  ansible_play_batch | join(' ') }}
     {%  set vq_options = pcmk_votequorum | default({}) %}
     {%  for key in vq_options.keys() | intersect(pcmk_vq_keys) %}
     {%    if pcmk_votequorum[key] is sameas(true) %}
