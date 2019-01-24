@@ -32,14 +32,11 @@
   command: >
     pcs cluster setup --name {{ pcmk_cluster_name | quote }}
     {{  ansible_play_batch | join(' ') }}
-    {%  set vq_options = pcmk_votequorum | default({}) %}
-    {%  for key in vq_options.keys() | intersect(pcmk_vq_keys) %}
-    {%    if pcmk_votequorum[key] is sameas(true) %}
+    {%  for key, value in pcmk_votequorum.iteritems() %}
+    {%    if value is sameas(true) %}
     {%      set value = 1 %}
-    {%    elif pcmk_votequorum[key] is sameas(false) %}
+    {%    elif value is sameas(false) %}
     {%      set value = 0 %}
-    {%    else %}
-    {%      set value = pcmk_votequorum[key] %}
     {%    endif %}
     {{    '--%s=%s' | format(key, value) }}
     {%  endfor %}

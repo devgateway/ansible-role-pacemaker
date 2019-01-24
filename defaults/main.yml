@@ -2,8 +2,4 @@
 pcmk_cluster_name: hacluster
 pcmk_user: hacluster
 pcmk_pretty_xml: false
-pcmk_vq_keys:
-  - wait_for_all
-  - auto_tie_breaker
-  - last_man_standing
-  - last_man_standing_window
+pcmk_votequorum: {}
