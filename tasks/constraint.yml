@@ -1,0 +1,8 @@
+---
+- name: Configure resource constraints
+  include_tasks: _constraint.yml
+  vars:
+    xml_path: "{{ pacemaker_config.path }}"
+  loop: "{{ pcmk_constraints }}"
+  loop_control:
+    loop_var: constraint
