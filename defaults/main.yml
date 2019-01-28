@@ -3,3 +3,5 @@ pcmk_cluster_name: hacluster
 pcmk_user: hacluster
 pcmk_pretty_xml: false
 pcmk_votequorum: {}
+pcmk_cluster_options: {}
+pcmk_resource_defaults: {}

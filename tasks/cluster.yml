@@ -60,7 +60,7 @@
     xml_path: "{{ pcmk_config.path }}"
     nvpair_parent: /cib/configuration/crm_config/cluster_property_set[@id="cib-bootstrap-options"]
     parent_id: cib-bootstrap-options
-  with_dict: "{{ pcmk_cluster_options | default({}) }}"
+  with_dict: "{{ pcmk_cluster_options }}"
   loop_control:
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
@@ -71,7 +71,7 @@
     xml_path: "{{ pcmk_config.path }}"
     nvpair_parent: /cib/configuration/rsc_defaults/meta_attributes[@id="rsc_defaults-options"]
     parent_id: rsc_defaults-options
-  with_dict: "{{ pcmk_resource_defaults | default({}) }}"
+  with_dict: "{{ pcmk_resource_defaults }}"
   loop_control:
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
