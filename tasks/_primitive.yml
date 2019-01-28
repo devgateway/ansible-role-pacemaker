@@ -1,51 +1,67 @@
 ---
-- name: Create primitive {{ primitive.key }}
+# Example variable
+# primitive:
+#   id: nginx-ip
+#   class: ocf
+#   provider: heartbeat
+#   type: IPaddr2
+#   options:
+#     ip: 10.0.0.1
+#   op:
+#     - name: monitor
+#       interval: 10s
+
+- name: Create primitive {{ primitive.id }}
   xml:
     path: "{{ xml_path }}"
-    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
+    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.id }}"]'
   check_mode: false
 
-- name: Set {{ primitive.key }} resource agent
+- name: Set {{ primitive.id }} resource agent
   xml:
     path: "{{ xml_path }}"
-    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]'
-    attribute: "{{ resource_attr.key }}"
-    value: "{{ resource_attr.value }}"
-  with_dict: "{{ primitive.value.resource }}"
+    xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.id }}"]'
+    attribute: "{{ attribute }}"
+    value: "{{ primitive[attribute] }}"
+  loop:
+    - class
+    - provider
+    - type
   loop_control:
-    loop_var: resource_attr
-    label: "{{ '{' ~ resource_attr.key ~ ': ' ~ resource_attr.value ~ '}' }}"
+    loop_var: attribute
+    label: "{{ '%s: %s' | format(attribute, primitive[attribute]) }}"
+  when: attribute in primitive
   check_mode: false
 
-- name: Configure attributes for {{ primitive.key }}
+- name: Configure attributes for {{ primitive.id }}
   include_tasks: _nvpair.yml
   vars:
     nvpair_parent: >-
       {{ primitive_parent ~
-      ('/primitive[@id="%(key)s"]/instance_attributes[@id="%(key)s-instance_attributes"]'
-      | format(key = primitive.key)) }}
-    parent_id: "{{ primitive.key }}-instance_attributes"
+      ('/primitive[@id="%(id)s"]/instance_attributes[@id="%(id)s-instance_attributes"]'
+      | format(id = primitive.id)) }}
+    parent_id: "{{ primitive.id }}-instance_attributes"
   with_dict: "{{ primitive.value.options | default({}) }}"
   loop_control:
     loop_var: nvpair
 
-- name: Configure meta attributes for {{ primitive.key }}
+- name: Configure meta attributes for {{ primitive.id }}
   include_tasks: _nvpair.yml
   vars:
     nvpair_parent: >-
       {{ primitive_parent ~
-      ('/primitive[@id="%(key)s"]/meta_attributes[@id="%(key)s-meta_attributes"]'
-      | format(key = primitive.key)) }}
-    parent_id: "{{ primitive.key }}-meta_attributes"
+      ('/primitive[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
+      | format(id = primitive.id)) }}
+    parent_id: "{{ primitive.id }}-meta_attributes"
   with_dict: "{{ primitive.value.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
 
-- name: Configure operations for {{ primitive.key }}
+- name: Configure operations for {{ primitive.id }}
   include_tasks: _op.yml
   vars:
-    op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.key }}"]/operations'
-    parent_id: "{{ primitive.key }}"
+    op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.id }}"]/operations'
+    parent_id: "{{ primitive.id }}"
   loop: "{{ primitive.value.op | default([]) }}"
   loop_control:
     loop_var: op_properties
