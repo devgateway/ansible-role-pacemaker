@@ -29,7 +29,7 @@
     - type
   loop_control:
     loop_var: attribute
-    label: "{{ '%s: %s' | format(attribute, primitive[attribute]) }}"
+    label: "{{ '{%s: %s}' | format(attribute, primitive[attribute] | default('<unset>')) }}"
   when: attribute in primitive
   check_mode: false
 
