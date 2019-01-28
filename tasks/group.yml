@@ -6,6 +6,7 @@
     path: "{{ xml_path }}"
     xpath: "/cib/configuration/resources/group[@id='{{ pcmk_group.name }}']"
   check_mode: false
+  run_once: true
 
 - name: Create resources in group {{ pcmk_group.name }}
   include_tasks: _primitive.yml
@@ -17,5 +18,6 @@
   with_dict: "{{ pcmk_group.resources | default({}) }}"
   loop_control:
     loop_var: primitive
+  run_once: true
 
 - include_tasks: post.yml

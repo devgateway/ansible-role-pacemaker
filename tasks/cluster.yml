@@ -64,6 +64,7 @@
   loop_control:
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+  run_once: true
 
 - name: Configure resource defaults
   include_tasks: _nvpair.yml
@@ -75,5 +76,6 @@
   loop_control:
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+  run_once: true
 
 - include_tasks: post.yml

@@ -6,3 +6,4 @@
   loop: "{{ pcmk_constraints }}"
   loop_control:
     loop_var: constraint
+  run_once: true

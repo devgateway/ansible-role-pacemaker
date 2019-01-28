@@ -7,5 +7,6 @@
     xml_path: "{{ pcmk_config.path }}"
     primitive_parent: /cib/configuration/resources
     primitive: "{{ pcmk_resource }}"
+  run_once: true
 
 - include_tasks: post.yml

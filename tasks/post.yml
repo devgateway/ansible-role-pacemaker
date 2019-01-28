@@ -6,6 +6,7 @@
     get_checksum: true
     get_mime: false
   register: after
+  run_once: true
 
 - name: Read admin epoch
   xml:
@@ -17,6 +18,7 @@
   when: before.stat.checksum != after.stat.checksum
   changed_when: false
   check_mode: false
+  run_once: true
 
 - name: Increment admin epoch
   xml:
@@ -27,16 +29,19 @@
     value: "{{ (xml_result.matches[0].cib.admin_epoch | default(0) | int) + 1 }}"
   when: before.stat.checksum != after.stat.checksum
   check_mode: false
+  run_once: true
 
 - name: Verify cluster configuration
   command: crm_verify --verbose --xml-file={{ pcmk_config.path | quote }}
   when: before.stat.checksum != after.stat.checksum
   changed_when: false
   check_mode: false
+  run_once: true
 
 - name: Push cluster configuration
   command: cibadmin --replace --xml-file {{ pcmk_config.path | quote }}
   when: before.stat.checksum != after.stat.checksum
+  run_once: true
 
 - name: Clean up
   file:
@@ -44,3 +49,4 @@
     state: absent
   check_mode: false
   changed_when: false
+  run_once: true

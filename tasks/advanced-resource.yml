@@ -6,6 +6,7 @@
     path: "{{ xml_path }}"
     xpath: "/cib/configuration/resources/{{ pcmk_resource.type }}[@id='{{ pcmk_resource.name }}']"
   check_mode: false
+  run_once: true
 
 - name: Configure attributes for {{ pcmk_resource.name }}
   include_tasks: _nvpair.yml
@@ -19,6 +20,7 @@
   loop_control:
     loop_var: nvpair
     label: "{{ '{' ~ nvpair.name ~ ': ' ~ nvpair.value ~ '}' }}"
+  run_once: true
 
 - name: Create resources in {{ pcmk_resource.name }}
   include_tasks: _primitive.yml
@@ -30,5 +32,6 @@
   with_dict: "{{ pcmk_resource.resources | default({}) }}"
   loop_control:
     loop_var: primitive
+  run_once: true
 
 - include_tasks: post.yml
