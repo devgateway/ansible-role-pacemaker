@@ -41,7 +41,7 @@
       ('/primitive[@id="%(id)s"]/instance_attributes[@id="%(id)s-instance_attributes"]'
       | format(id = primitive.id)) }}
     parent_id: "{{ primitive.id }}-instance_attributes"
-  with_dict: "{{ primitive.value.options | default({}) }}"
+  with_dict: "{{ primitive.options | default({}) }}"
   loop_control:
     loop_var: nvpair
 
@@ -53,7 +53,7 @@
       ('/primitive[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
       | format(id = primitive.id)) }}
     parent_id: "{{ primitive.id }}-meta_attributes"
-  with_dict: "{{ primitive.value.meta | default({}) }}"
+  with_dict: "{{ primitive.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
 
@@ -62,6 +62,6 @@
   vars:
     op_parent: '{{ primitive_parent }}/primitive[@id="{{ primitive.id }}"]/operations'
     parent_id: "{{ primitive.id }}"
-  loop: "{{ primitive.value.op | default([]) }}"
+  loop: "{{ primitive.op | default([]) }}"
   loop_control:
     loop_var: op_properties
