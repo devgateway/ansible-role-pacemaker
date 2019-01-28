@@ -1,6 +1,6 @@
 ---
 - name: Create resources in {{ group.key }}
-  include_tasks: _primitive.yml
+  include_tasks: _primitive-old.yml
   with_dict: "{{ element }}"
   loop_control:
     loop_var: primitive

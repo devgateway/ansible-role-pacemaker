@@ -20,7 +20,7 @@
   when: resource.value.type != 'group'
 
 - name: Create resources in {{ resource.key }}
-  include_tasks: _primitive.yml
+  include_tasks: _primitive-old.yml
   vars:
     primitive_parent: >-
       {{ '/cib/configuration/resources/%(type)s[@id="%(id)s"]'

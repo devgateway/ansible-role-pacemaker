@@ -52,7 +52,7 @@
     label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
 
 - name: Configure simple resources
-  include_tasks: _primitive.yml
+  include_tasks: _primitive-old.yml
   vars:
     xml_path: "{{ pacemaker_config.path }}"
     primitive_parent: /cib/configuration/resources
