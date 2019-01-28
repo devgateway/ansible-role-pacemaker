@@ -1,23 +1,21 @@
 ---
 - include_tasks: pre.yml
 
-- name: Create group {{ pcmk_group.name }}
+- name: Create group {{ pcmk_group.id }}
   xml:
     path: "{{ xml_path }}"
-    xpath: "/cib/configuration/resources/group[@id='{{ pcmk_group.name }}']"
+    xpath: "/cib/configuration/resources/group[@id='{{ pcmk_group.id }}']"
   check_mode: false
   run_once: true
 
-- name: Create resources in group {{ pcmk_group.name }}
+- name: Create resources in group {{ pcmk_group.id }}
   include_tasks: _primitive.yml
   vars:
-    primitive_parent: >-
-      {{ '/cib/configuration/resources/group[@id="%(id)s"]'
-      | format(id = pcmk_group.name) }}
-    parent_id: "{{ pcmk_group.name }}"
-  with_dict: "{{ pcmk_group.resources | default({}) }}"
-  loop_control:
-    loop_var: primitive
+    primitive_parent: '/cib/configuration/resources/group[@id="{{ pcmk_group.id }}"]'
+    parent_id: "{{ pcmk_group.id }}"
+    primitive: "{{ item.value }}"
+    primitive_id: "{{ item.key }}"
+  with_dict: "{{ pcmk_group.resources }}"
   run_once: true
 
 - include_tasks: post.yml
