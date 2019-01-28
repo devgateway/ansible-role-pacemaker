@@ -3,7 +3,7 @@
     Create operation {{ op_properties.name | mandatory }}
     interval {{ op_properties.interval | mandatory }}
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: >-
       {{ op_parent ~ ('/op[@id="%(parent)s-%(name)s-interval-%(int)s"]'
       | format(parent = parent_id, name = op_properties.name, int = op_properties.interval)) }}
@@ -13,7 +13,7 @@
     Set properties for {{ op_properties.name }}
     interval {{ op_properties.interval | mandatory }}
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: >-
       {{ op_parent ~ ('/op[@id="%(parent)s-%(name)s-interval-%(int)s"]'
       | format(parent = parent_id, name = op_properties.name, int = op_properties.interval)) }}

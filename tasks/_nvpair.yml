@@ -9,7 +9,7 @@
     {{    nvpair.value }}
     {%- endif %}
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: >-
       {{ nvpair_parent ~
       ('/nvpair[@name="%(name)s" and @id="%(parent)s-%(name)s"]'

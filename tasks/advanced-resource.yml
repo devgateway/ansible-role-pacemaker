@@ -3,7 +3,7 @@
 
 - name: Create {{ pcmk_resource.type }} resource {{ pcmk_resource.name }}
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: "/cib/configuration/resources/{{ pcmk_resource.type }}[@id='{{ pcmk_resource.name }}']"
   check_mode: false
   run_once: true

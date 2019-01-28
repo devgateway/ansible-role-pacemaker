@@ -13,13 +13,13 @@
 
 - name: Create primitive {{ primitive.id | default(primitive_id) }}
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.id | default(primitive_id) }}"]'
   check_mode: false
 
 - name: Set {{ primitive.id | default(primitive_id) }} resource agent
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: '{{ primitive_parent }}/primitive[@id="{{ primitive.id | default(primitive_id) }}"]'
     attribute: "{{ attribute }}"
     value: "{{ primitive[attribute] }}"

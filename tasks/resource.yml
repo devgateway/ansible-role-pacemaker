@@ -4,7 +4,6 @@
 - name: Configure simple resource
   include_tasks: _primitive.yml
   vars:
-    xml_path: "{{ pcmk_config.path }}"
     primitive_parent: /cib/configuration/resources
     primitive: "{{ pcmk_resource }}"
   run_once: true

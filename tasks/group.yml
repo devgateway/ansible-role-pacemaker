@@ -3,7 +3,7 @@
 
 - name: Create group {{ pcmk_group.id }}
   xml:
-    path: "{{ xml_path }}"
+    path: "{{ pcmk_config.path }}"
     xpath: "/cib/configuration/resources/group[@id='{{ pcmk_group.id }}']"
   check_mode: false
   run_once: true
