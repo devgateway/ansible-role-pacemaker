@@ -74,6 +74,18 @@ Dictionary describing a simple (*primitive*) resource. Contains the following me
   `interval` members, and optional arbitrary members;
 * `meta`: optional dictionary of meta-attributes.
 
+### `tasks_from: group`
+
+Configure a resource group.
+
+#### `pcmk_group`
+
+Dictionary with two members:
+
+* `id` is the group identifier
+* `resources` is a dictionary where keys are resource IDs, and values have the same format as
+  `pcmk_resource` (except for `id` of the resources being optional).
+
 ### Example playbooks
 
 #### Active-active chrooted BIND DNS server
