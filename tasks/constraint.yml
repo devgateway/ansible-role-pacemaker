@@ -1,9 +1,49 @@
 ---
-- name: Configure resource constraints
-  include_tasks: _constraint.yml
-  vars:
-    xml_path: "{{ pcmk_config.path }}"
-  loop: "{{ pcmk_constraints }}"
+- name: Create {{ pcmk_constraint.type }} pcmk_constraint
+  xml:
+    path: "{{ pcmk_config.path }}"
+    xpath: |-
+      {%  if pcmk_constraint.type == 'location' %}
+      {%    set arg1 = pcmk_constraint['rsc'] %}
+      {%    set arg2 = pcmk_constraint['node'] %}
+      {%  elif pcmk_constraint.type == 'colocation' %}
+      {%    set arg1 = pcmk_constraint['rsc'] %}
+      {%    set arg2 = pcmk_constraint['with-rsc'] %}
+      {%  else %}
+      {%    set arg1 = pcmk_constraint['first'] %}
+      {%    set arg2 = pcmk_constraint['then'] %}
+      {%  endif -%}
+      {{  '/cib/configuration/constraints/rsc_%(type)s[@id="%(type)s-%(arg1)s-%(arg2)s-%(score)s"]'
+      | format(type = pcmk_constraint.type, arg1 = arg1, arg2 = arg2, score = pcmk_constraint.score) }}
+  check_mode: false
+
+- name: Set pcmk_constraint properties
+  xml:
+    path: "{{ pcmk_config.path }}"
+    xpath: |-
+      {%  if pcmk_constraint.type == 'location' %}
+      {%    set arg1 = pcmk_constraint['rsc'] %}
+      {%    set arg2 = pcmk_constraint['node'] %}
+      {%  elif pcmk_constraint.type == 'colocation' %}
+      {%    set arg1 = pcmk_constraint['rsc'] %}
+      {%    set arg2 = pcmk_constraint['with-rsc'] %}
+      {%  else %}
+      {%    set arg1 = pcmk_constraint['first'] %}
+      {%    set arg2 = pcmk_constraint['then'] %}
+      {%  endif -%}
+      {{  '/cib/configuration/constraints/rsc_%(type)s[@id="%(type)s-%(arg1)s-%(arg2)s-%(score)s"]'
+      | format(type = pcmk_constraint.type, arg1 = arg1, arg2 = arg2, score = pcmk_constraint.score) }}
+    attribute: "{{ attr_name }}"
+    value: |-
+      {%  if pcmk_constraint[attr_name] is sameas(true) %}
+      {{    'true' }}
+      {%- elif pcmk_constraint[attr_name] is sameas(false) %}
+      {{    'false' }}
+      {%- else %}
+      {{    pcmk_constraint[attr_name] }}
+      {%- endif %}
+  loop: "{{ pcmk_constraint.keys() | difference(['type']) }}"
   loop_control:
-    loop_var: constraint
-  run_once: true
+    loop_var: attr_name
+    label: "{{ '{%s: %s}' | format(attr_name, pcmk_constraint[attr_name]) }}"
+  check_mode: false
