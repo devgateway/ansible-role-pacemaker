@@ -24,45 +24,44 @@ be quoted.
 
 Set up nodes, configure cluster properties, and resource defaults.
 
-#### Optional Variables
+#### `pcmk_cluster_name`
 
-##### `pcmk_cluster_name`
-
-Name of the cluster.
+Name of the cluster (optional).
 
 Default: `hacluster`.
 
-##### `pcmk_password`
+#### `pcmk_password`
 
-The plaintext password for the cluster user. If omitted, will be derived from
+The plaintext password for the cluster user (optional). If omitted, will be derived from
 `ansible_machine_id` of the first host in the play batch. This password is only used in the initial
 authentication of the nodes.
 
 Default: `ansible_machine_id | to_uuid`
 
-##### `pcmk_user`
+#### `pcmk_user`
 
-The system user to authenticate PCS nodes with. PCS will authenticate all nodes with each other.
+The system user to authenticate PCS nodes with (optional). PCS will authenticate all nodes with
+each other.
 
 Default: hacluster
 
-##### `pcmk_cluster_options`
+#### `pcmk_cluster_options`
 
-Dictionary with [cluster-wide options](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-cluster-options.html).
+Dictionary with [cluster-wide options](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-cluster-options.html) (optional).
 
-##### `pcmk_votequorum`
+#### `pcmk_votequorum`
 
-Dictionary with votequorum options. See `votequorum(5)`. Boolean values accepted.
+Dictionary with votequorum options (optional). See `votequorum(5)`. Boolean values accepted.
 
-##### `pcmk_resource_defaults`
+#### `pcmk_resource_defaults`
 
-Dictionary of resource defaults.
+Dictionary of resource defaults (optional).
 
 ### `tasks_from: resource`
 
 Configure a simple resource.
 
-##### `pcmk_resource`
+#### `pcmk_resource`
 
 Dictionary describing a simple (*primitive*) resource. Contains the following members:
 
