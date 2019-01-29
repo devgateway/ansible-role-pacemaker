@@ -34,7 +34,7 @@
   check_mode: false
 
 - name: Configure attributes for {{ primitive.id | default(primitive_id) }}
-  include_tasks: _nvpair.yml
+  include_tasks: nvpair.yml
   vars:
     nvpair_parent: >-
       {{ '%(parent)s/primitive[@id="%(id)s"]/%(type)s_attributes[@id="%(id)s-%(type)s_attributes"]'
@@ -46,7 +46,7 @@
     loop_var: nvpair
 
 - name: Configure meta attributes for {{ primitive.id | default(primitive_id) }}
-  include_tasks: _nvpair.yml
+  include_tasks: nvpair.yml
   vars:
     nvpair_parent: >-
       {{ '%(parent)s/primitive[@id="%(id)s"]/%(type)s_attributes[@id="%(id)s-%(type)s_attributes"]'
@@ -58,7 +58,7 @@
     loop_var: nvpair
 
 - name: Configure operations for {{ primitive.id | default(primitive_id) }}
-  include_tasks: _op.yml
+  include_tasks: op.yml
   vars:
     op_parent: >-
       {{ '%(parent)s/primitive[@id="%(id)s"]/operations'

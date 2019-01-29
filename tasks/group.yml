@@ -9,7 +9,7 @@
   run_once: true
 
 - name: Create resources in group {{ pcmk_group.id }}
-  include_tasks: _primitive.yml
+  include_tasks: primitive.yml
   vars:
     primitive_parent: '/cib/configuration/resources/group[@id="{{ pcmk_group.id }}"]'
     parent_id: "{{ pcmk_group.id }}"

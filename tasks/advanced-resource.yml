@@ -9,7 +9,7 @@
   run_once: true
 
 - name: Configure attributes for {{ pcmk_resource.name }}
-  include_tasks: _nvpair.yml
+  include_tasks: nvpair.yml
   vars:
     nvpair_parent: >-
       {{ '/cib/configuration/resources/' ~
@@ -23,7 +23,7 @@
   run_once: true
 
 - name: Create resources in {{ pcmk_resource.name }}
-  include_tasks: _primitive.yml
+  include_tasks: primitive.yml
   vars:
     primitive_parent: >-
       {{ '/cib/configuration/resources/%(type)s[@id="%(id)s"]'

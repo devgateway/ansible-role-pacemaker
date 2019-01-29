@@ -2,7 +2,7 @@
 - include_tasks: pre.yml
 
 - name: Configure simple resource
-  include_tasks: _primitive.yml
+  include_tasks: primitive.yml
   vars:
     primitive_parent: /cib/configuration/resources
     primitive: "{{ pcmk_resource }}"
