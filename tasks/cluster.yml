@@ -57,7 +57,6 @@
 - name: Configure cluster properties
   include_tasks: _nvpair.yml
   vars:
-    xml_path: "{{ pcmk_config.path }}"
     nvpair_parent: /cib/configuration/crm_config/cluster_property_set[@id="cib-bootstrap-options"]
     parent_id: cib-bootstrap-options
   with_dict: "{{ pcmk_cluster_options }}"
@@ -69,7 +68,6 @@
 - name: Configure resource defaults
   include_tasks: _nvpair.yml
   vars:
-    xml_path: "{{ pcmk_config.path }}"
     nvpair_parent: /cib/configuration/rsc_defaults/meta_attributes[@id="rsc_defaults-options"]
     parent_id: rsc_defaults-options
   with_dict: "{{ pcmk_resource_defaults }}"
