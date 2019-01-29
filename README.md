@@ -58,6 +58,23 @@ Dictionary with votequorum options. See `votequorum(5)`. Boolean values accepted
 
 Dictionary of resource defaults.
 
+### `tasks_from: resource`
+
+Configure a simple resource.
+
+##### `pcmk_resource`
+
+Dictionary describing a simple (*primitive*) resource. Contains the following members:
+
+* `id`: resource identifier; mandatory for simple resources;
+* `class`, `provider`, and `type`: resource agent descriptors; `provider` may be omitted, e.g. when
+  `type` is `service`;
+* `options`: optional dictionary of resource-specific attributes, e.g. address and netmask for
+  *IPaddr2*;
+* `op`: optional list of operations; each operation is a dictionary with required `name` and
+  `interval` members, and optional arbitrary members;
+* `meta`: optional dictionary of meta-attributes.
+
 ### Example playbooks
 
 #### Active-active chrooted BIND DNS server
