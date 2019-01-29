@@ -12,27 +12,27 @@ to focus on specific resources, without interfering with the rest.
 This role has been written for and tested in Scientific Linux 7. It might also work in other
 distros, please share your experience.
 
-## Role variables
+## Tasks
+
+Use `tasks_from` Ansible directive to specify what you want to configure.
 
 Boolean values in properties (parsed by Pacemaker itself) don't have to be quoted. However,
 resource agents may expect Boolean-like arguments as integers, strings, etc. Such values **must**
 be quoted.
 
-### Optional
+### `tasks_from: main`
 
-#### `pacemaker_cluster_name`
+Set up nodes, configure cluster properties, and resource defaults.
+
+#### Optional Variables
+
+##### `pcmk_cluster_name`
 
 Name of the cluster.
 
 Default: `hacluster`.
 
-#### `pacemaker_hosts`
-
-The list of cluster members.
-
-Default: `ansible_play_batch`
-
-#### `pacemaker_password`
+##### `pcmk_password`
 
 The plaintext password for the cluster user. If omitted, will be derived from
 `ansible_machine_id` of the first host in the play batch. This password is only used in the initial
@@ -40,71 +40,27 @@ authentication of the nodes.
 
 Default: `ansible_machine_id | to_uuid`
 
-#### `pacemaker_user`
+##### `pcmk_user`
 
 The system user to authenticate PCS nodes with. PCS will authenticate all nodes with each other.
 
 Default: hacluster
 
-#### `pacemaker_cluster_options`
+##### `pcmk_cluster_options`
 
 Dictionary with [cluster-wide options](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-cluster-options.html).
 
-#### `pacemaker_votequorum`
+##### `pcmk_votequorum`
 
 Dictionary with votequorum options. See `votequorum(5)`. Boolean values accepted.
 
-#### `pacemaker_resource_defaults`
+##### `pcmk_resource_defaults`
 
 Dictionary of resource defaults.
 
-#### `pacemaker_simple_resources`
+### Example playbooks
 
-A dictionary of simple (primitive) resources. Keys are resource IDs. Values are dictionaries.
-
-These dictionaries may have the following members.
-
-* `resource`: a dictionary defining the resource agent (`class`, `provider`, and `type`). This
- member is required.
-
-* `options`: a dictionary of options specific to the resource agent. Remember to quote values in the
- format that the RA expects.
-
-* `meta`: a dictionary of resource [meta attributes](https://clusterlabs.org/pacemaker/doc/en-US/Pacemaker/1.1/html/Pacemaker_Explained/s-resource-options.html#_resource_meta_attributes)
-(RA-nonspecific).
-
-* `op`: a list of dictionaries defining resource operations. The members `name` and `interval` are
-required.
-
-#### `pacemaker_advanced_resources`
-
-A dictionary of advanced (group, clone, or master) resources. Dictionary keys are resource IDs.
-Members may include the following.
-
-* `type`: required, one of: `group`, `clone`, or `master`.
-
-* `meta`: optional, a dictionary of advanced resource meta attributes.
-
-* `resources`: a dictionary of primitive resources, identical to `pacemaker_simple_resources`
-described above.
-
-#### `pacemaker_resource_groups`
-
-A dictionary of resource groups. Values are lists of primitive resources. Please note, that although
-group members are created in order, they cannot be reordered later.
-
-#### `pacemaker_constraints`
-
-A list of dictionaries defining resource constraints. The following members are required, the rest
-being optional.
-
-* `type`: one of: `location`, `colocation`, or `order`.
-
-* `score`: constraint score (signed integer or +/-INFINITY).
-
-## Example playbooks
-
-### Active-active chrooted BIND DNS server
+#### Active-active chrooted BIND DNS server
 
     ---
     - name: Configure DNS cluster
