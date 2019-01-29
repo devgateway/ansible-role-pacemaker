@@ -1,9 +1,4 @@
 ---
-- name: Install PCS package
-  package:
-    name: pcs
-    state: installed
-
 - name: Enable and start PCS daemon
   service:
     name: pcsd
@@ -25,7 +20,7 @@
 - name: Authenticate all nodes
   command: >
     pcs cluster auth
-    {{ pcmk_hosts | default(ansible_play_batch) | join(' ') }}
+    {{ ansible_play_batch | join(' ') }}
     -u {{ pcmk_user }}
     -p {{ pcmk_password | quote }}
   run_once: true
@@ -36,15 +31,12 @@
   run_once: true
   command: >
     pcs cluster setup --name {{ pcmk_cluster_name | quote }}
-    {{  pcmk_hosts | default(ansible_play_batch) | join(' ') }}
-    {%  set vq_options = pcmk_votequorum | default({}) %}
-    {%  for key in vq_options.keys() | intersect(pcmk_vq_keys) %}
-    {%    if pcmk_votequorum[key] is sameas(true) %}
+    {{  ansible_play_batch | join(' ') }}
+    {%  for key, value in pcmk_votequorum.iteritems() %}
+    {%    if value is sameas(true) %}
     {%      set value = 1 %}
-    {%    elif pcmk_votequorum[key] is sameas(false) %}
+    {%    elif value is sameas(false) %}
     {%      set value = 0 %}
-    {%    else %}
-    {%      set value = pcmk_votequorum[key] %}
     {%    endif %}
     {{    '--%s=%s' | format(key, value) }}
     {%  endfor %}
@@ -60,6 +52,28 @@
     - corosync
     - pacemaker
 
-- name: Set up CIB XML
+- include_tasks: pre.yml
+
+- name: Configure cluster properties
+  include_tasks: _nvpair.yml
+  vars:
+    nvpair_parent: /cib/configuration/crm_config/cluster_property_set[@id="cib-bootstrap-options"]
+    parent_id: cib-bootstrap-options
+  with_dict: "{{ pcmk_cluster_options }}"
+  loop_control:
+    loop_var: nvpair
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
   run_once: true
-  include_tasks: _cib.yml
+
+- name: Configure resource defaults
+  include_tasks: _nvpair.yml
+  vars:
+    nvpair_parent: /cib/configuration/rsc_defaults/meta_attributes[@id="rsc_defaults-options"]
+    parent_id: rsc_defaults-options
+  with_dict: "{{ pcmk_resource_defaults }}"
+  loop_control:
+    loop_var: nvpair
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+  run_once: true
+
+- include_tasks: post.yml
