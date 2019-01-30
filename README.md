@@ -259,33 +259,33 @@ wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
           loop_control:
             loop_var: pcmk_resource
           loop:
-              - id: coolapp
-                class: service
-                type: coolapp
-              - id: nginx
-                class: service
-                type: nginx
-              - id: virtual-ip
-                class: ocf
-                provider: heartbeat
-                type: IPaddr2
-                options:
-                  ip: 10.0.0.23
-                meta:
-                  migration-threshold: 0
-                op:
-                  - name: start
-                    timeout: 60s
-                    interval: 0s
-                    on-fail: restart
-                  - name: monitor
-                    timeout: 60s
-                    interval: 10s
-                    on-fail: restart
-                  - name: stop
-                    timeout: 60s
-                    interval: 0s
-                    on-fail: restart
+            - id: coolapp
+              class: service
+              type: coolapp
+            - id: nginx
+              class: service
+              type: nginx
+            - id: virtual-ip
+              class: ocf
+              provider: heartbeat
+              type: IPaddr2
+              options:
+                ip: 10.0.0.23
+              meta:
+                migration-threshold: 0
+              op:
+                - name: start
+                  timeout: 60s
+                  interval: 0s
+                  on-fail: restart
+                - name: monitor
+                  timeout: 60s
+                  interval: 10s
+                  on-fail: restart
+                - name: stop
+                  timeout: 60s
+                  interval: 0s
+                  on-fail: restart
     
         - name: Configure master-slave Postgres
           include_role:
