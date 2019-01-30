@@ -95,13 +95,15 @@ Configure a constraint.
 Dictionary defining a single constraint. The following members are required:
 
 * `type`: one of: `location`, `colocation`, or `order`;
-* `score`: constraint score (signed integer or +/-INFINITY).
+* `score`: constraint score (signed integer, `INFINITY`, or `-INFINITY`).
 
 Depending on the value of `type`, the following members are also required:
 
 * `location` requires `rsc` and `node`;
 * `colocation` requires `rsc` and `with-rsc`;
 * `order` requires `first` and `then`;
+
+The dictionary may contain other members, e.g. `symmetrical`.
 
 ## Example playbooks
 
