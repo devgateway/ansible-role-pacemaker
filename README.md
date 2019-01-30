@@ -86,9 +86,26 @@ Dictionary with two members:
 * `resources` is a dictionary where keys are resource IDs, and values have the same format as
   `pcmk_resource` (except for `id` of the resources being optional).
 
-### Example playbooks
+### `tasks_from: constraint`
 
-#### Active-active chrooted BIND DNS server
+Configure a constraint.
+
+##### `pcmk_constraint`
+
+Dictionary defining a single constraint. The following members are required:
+
+* `type`: one of: `location`, `colocation`, or `order`;
+* `score`: constraint score (signed integer or +/-INFINITY).
+
+Depending on the value of `type`, the following members are also required:
+
+* `location` requires `rsc` and `node`;
+* `colocation` requires `rsc` and `with-rsc`;
+* `order` requires `first` and `then`;
+
+## Example playbooks
+
+### Active-active chrooted BIND DNS server
 
     ---
     - name: Configure DNS cluster
