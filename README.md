@@ -170,39 +170,58 @@ Depending on the value of `type`, the following members are also required:
     - name: Configure Squid cluster
       hosts: proxy-servers
       tasks:
-        - name: Setup cluster
+    
+        - name: Set up cluster
           include_role:
             name: devgateway.pacemaker
           vars:
-            pacemaker_password: hunter2
-            pacemaker_cluster_name: squid
-            pacemaker_cluster_options:
+            pcmk_password: hunter2
+            pcmk_cluster_name: squid
+            pcmk_cluster_options:
               stonith-enabled: false
-            pacemaker_simple_resources:
-              squid-ip:
-                resource:
-                  class: ocf
-                  provider: heartbeat
-                  type: IPaddr2
-                options:
-                  ip: 192.168.0.200
-                  cidr_netmask: 24
-                op:
-                  - name: monitor
-                    interval: 5s
-            pacemaker_advanced_resources:
-              squid:
+    
+        - name: Configure IP address resource
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: resource
+          vars:
+            pcmk_resource:
+              id: squid-ip
+              class: ocf
+              provider: heartbeat
+              type: IPaddr2
+              options:
+                ip: 192.168.0.200
+                cidr_netmask: 24
+              op:
+                - name: monitor
+                  interval: 5s
+    
+        - name: Configure cloned BIND resource
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: advanced-resource
+          vars:
+            pcmk_resource:
+              id: squid
                 type: clone
                 resources:
                   squid-service:
-                    resource:
-                      class: service
-                      type: squid
+                    class: service
+                    type: squid
                     op:
                       - name: monitor
                         interval: 5s
-            pacemaker_constraints:
-              - order squid-ip then squid
+    
+        - name: Set up constraints
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: constraint
+          vars:
+            pcmk_constraint:
+              type: order
+              first: squid-ip
+              then: squid
 
 ### Nginx, web application, and master-slave Postgres
 
