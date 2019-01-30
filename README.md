@@ -235,33 +235,38 @@ wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
         - alpha
         - bravo
       tasks:
+    
         - name: Set up Pacemaker with Postgres master/slave
           include_role:
             name: devgateway.pacemaker
           vars:
-            pacemaker_pretty_xml: true
-            pacemaker_cluster_name: example
-            pacemaker_password: hunter2
-            pacemaker_cluster_options:
+            pcmk_pretty_xml: true
+            pcmk_cluster_name: example
+            pcmk_password: hunter2
+            pcmk_cluster_options:
               no-quorum-policy: ignore
               stonith-enabled: false
-            pacemaker_resource_defaults:
+            pcmk_resource_defaults:
               resource-stickiness: INFINITY
               migration-threshold: 1
-            pacemaker_simple_resources:
-              coolapp:
-                resource:
-                  class: service
-                  type: coolapp
-              nginx:
-                resource:
-                  class: service
-                  type: nginx
-              virtual-ip:
-                resource:
-                  class: ocf
-                  provider: heartbeat
-                  type: IPaddr2
+    
+        - name: Configure simple resources
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: resource
+          loop_control:
+            loop_var: pcmk_resource
+          loop:
+              - id: coolapp
+                class: service
+                type: coolapp
+              - id: nginx
+                class: service
+                type: nginx
+              - id: virtual-ip
+                class: ocf
+                provider: heartbeat
+                type: IPaddr2
                 options:
                   ip: 10.0.0.23
                 meta:
@@ -279,88 +284,100 @@ wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
                     timeout: 60s
                     interval: 0s
                     on-fail: restart
-            pacemaker_advanced_resources:
-              postgres:
-                type: master
-                meta:
-                  master-max: 1
-                  master-node-max: 1
-                  clone-max: 2
-                  clone-node-max: 1
-                  notify: true
-                resources:
-                  postgres-replica-set:
-                    resource:
-                      class: ocf
-                      provider: heartbeat
-                      type: pgsql
-                    options:
-                      pgctl: /usr/pgsql-9.4/bin/pg_ctl
-                      psql: /usr/pgsql-9.4/bin/psql
-                      pgdata: /var/lib/pgsql/9.4/data
-                      rep_mode: sync
-                      node_list: "{{ ansible_play_batch | join(' ') }}"
-                      restore_command: cp /var/lib/pgsql/9.4/archive/%f %p
-                      master_ip: 10.0.0.23
-                      restart_on_promote: "true"
-                      repuser: replication
-                    op:
-                      - name: start
-                        timeout: 60s
-                        interval: 0s
-                        on-fail: restart
-                      - name: monitor
-                        timeout: 60s
-                        interval: 4s
-                        on-fail: restart
-                      - name: monitor
-                        timeout: 60s
-                        interval: 3s
-                        on-fail: restart
-                        role: Master
-                      - name: promote
-                        timeout: 60s
-                        interval: 0s
-                        on-fail: restart
-                      - name: demote
-                        timeout: 60s
-                        interval: 0s
-                        on-fail: stop
-                      - name: stop
-                        timeout: 60s
-                        interval: 0s
-                        on-fail: block
-                      - name: notify
-                        timeout: 60s
-                        interval: 0s
-            pacemaker_constraints:
-              - type: colocation
-                rsc: virtual-ip
-                with-rsc: postgres
-                with-rsc-role: Master
-                score: INFINITY
-              - type: colocation
-                rsc: nginx
-                with-rsc: virtual-ip
-                score: INFINITY
-              - type: colocation
-                rsc: coolapp
-                with-rsc: virtual-ip
-                score: INFINITY
-              - type: order
-                first: postgres
-                first-action: promote
-                then: virtual-ip
-                then-action: start
-                symmetrical: false
-                score: INFINITY
-              - type: order
-                first: postgres
-                first-action: demote
-                then: virtual-ip
-                then-action: stop
-                symmetrical: false
-                score: 0
+    
+        - name: Configure master-slave Postgres
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: advanced-resource
+          vars:
+            pcmk_resource:
+              id: postgres
+              type: master
+              meta:
+                master-max: 1
+                master-node-max: 1
+                clone-max: 2
+                clone-node-max: 1
+                notify: true
+              resources:
+                postgres-replica-set:
+                  class: ocf
+                  provider: heartbeat
+                  type: pgsql
+                  options:
+                    pgctl: /usr/pgsql-9.4/bin/pg_ctl
+                    psql: /usr/pgsql-9.4/bin/psql
+                    pgdata: /var/lib/pgsql/9.4/data
+                    rep_mode: sync
+                    node_list: "{{ ansible_play_batch | join(' ') }}"
+                    restore_command: cp /var/lib/pgsql/9.4/archive/%f %p
+                    master_ip: 10.0.0.23
+                    restart_on_promote: "true"
+                    repuser: replication
+                  op:
+                    - name: start
+                      timeout: 60s
+                      interval: 0s
+                      on-fail: restart
+                    - name: monitor
+                      timeout: 60s
+                      interval: 4s
+                      on-fail: restart
+                    - name: monitor
+                      timeout: 60s
+                      interval: 3s
+                      on-fail: restart
+                      role: Master
+                    - name: promote
+                      timeout: 60s
+                      interval: 0s
+                      on-fail: restart
+                    - name: demote
+                      timeout: 60s
+                      interval: 0s
+                      on-fail: stop
+                    - name: stop
+                      timeout: 60s
+                      interval: 0s
+                      on-fail: block
+                    - name: notify
+                      timeout: 60s
+                      interval: 0s
+    
+        - name: Set up constraints
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: constraint
+          loop_control:
+            loop_var: pcmk_constraint
+          loop:
+            - type: colocation
+              rsc: virtual-ip
+              with-rsc: postgres
+              with-rsc-role: Master
+              score: INFINITY
+            - type: colocation
+              rsc: nginx
+              with-rsc: virtual-ip
+              score: INFINITY
+            - type: colocation
+              rsc: coolapp
+              with-rsc: virtual-ip
+              score: INFINITY
+            - type: order
+              first: postgres
+              first-action: promote
+              then: virtual-ip
+              then-action: start
+              symmetrical: false
+              score: INFINITY
+            - type: order
+              first: postgres
+              first-action: demote
+              then: virtual-ip
+              then-action: stop
+              symmetrical: false
+              score: 0
 
 ## See also
 
