@@ -387,4 +387,4 @@ wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
 
 ## Copyright
 
-Copyright 2015-2018, Development Gateway. Licensed under GPL v3+.
+Copyright 2015-2019, Development Gateway. Licensed under GPL v3+.
