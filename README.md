@@ -43,7 +43,7 @@ Default: `ansible_machine_id | to_uuid`
 The system user to authenticate PCS nodes with (optional). PCS will authenticate all nodes with
 each other.
 
-Default: hacluster
+Default: `hacluster`
 
 #### `pcmk_cluster_options`
 
@@ -111,39 +111,58 @@ Depending on the value of `type`, the following members are also required:
     - name: Configure DNS cluster
       hosts: dns-servers
       tasks:
-        - name: Setup cluster
+    
+        - name: Set up cluster
           include_role:
             name: devgateway.pacemaker
           vars:
-            pacemaker_password: hunter2
-            pacemaker_cluster_name: named
-            pacemaker_cluster_options:
+            pcmk_password: hunter2
+            pcmk_cluster_name: named
+            pcmk_cluster_options:
               stonith-enabled: false
-            pacemaker_simple_resources:
-              dns-ip:
-                resource:
-                  class: ocf
-                  provider: heartbeat
-                  type: IPaddr2
-                options:
-                  ip: 10.0.0.1
-                  cidr_netmask: 8
-                op:
-                  - name: monitor
-                    interval: 5s
-            pacemaker_advanced_resources:
-              dns-clone:
-                type: clone
-                resources:
-                  named:
-                    resource:
-                      class: service
-                      type: named-chroot
-                    op:
-                      - name: monitor
-                        interval: 5s
-            pacemaker_constraints:
-              - order dns-ip then dns-clone
+    
+        - name: Configure IP address resource
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: resource
+          vars:
+            pcmk_resource:
+              id: dns-ip
+              class: ocf
+              provider: heartbeat
+              type: IPaddr2
+              options:
+                ip: 10.0.0.1
+                cidr_netmask: 8
+              op:
+                - name: monitor
+                  interval: 5s
+    
+        - name: Configure cloned BIND resource
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: advanced-resource
+          vars:
+            pcmk_resource:
+              type: clone
+              id: dns-clone
+              resources:
+                named:
+                  class: service
+                  type: named-chroot
+                  op:
+                    - name: monitor
+                      interval: 5s
+    
+        - name: Set up constraints
+          include_role:
+            name: devgateway.pacemaker
+            tasks_from: constraint
+          vars:
+            pcmk_constraint:
+              type: order
+              first: dns-ip
+              then: dns-clone
 
 ### Active-active Squid proxy
 
