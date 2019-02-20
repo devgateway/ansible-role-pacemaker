@@ -32,7 +32,7 @@
   command: >
     pcs cluster setup --name {{ pcmk_cluster_name | quote }}
     {{  ansible_play_batch | join(' ') }}
-    {%  for key, value in pcmk_votequorum.iteritems() %}
+    {%  for key, value in pcmk_votequorum.items() %}
     {%    if value is sameas(true) %}
     {%      set value = 1 %}
     {%    elif value is sameas(false) %}
