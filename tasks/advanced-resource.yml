@@ -15,11 +15,12 @@
       {{ '/cib/configuration/resources/' ~
       '%(type)s[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
       | format(type = pcmk_resource.type, id = pcmk_resource.id) }}
-    parent_id: "{{ pcmk_resource.id }}"
+#    parent_id: "{{ pcmk_resource.id }}"
+    parent_id: "{{ pcmk_resource.id }}-meta_attributes"
   with_dict: "{{ pcmk_resource.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
-    label: "{{ '{' ~ nvpair.name ~ ': ' ~ nvpair.value ~ '}' }}"
+#    label: "{{ '{' ~ nvpair.name ~ ': ' ~ nvpair.value ~ '}' }}"
   run_once: true
 
 - name: Create resources in {{ pcmk_resource.id }}

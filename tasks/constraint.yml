@@ -1,4 +1,6 @@
 ---
+- include_tasks: pre.yml
+
 - name: Create {{ pcmk_constraint.type }} pcmk_constraint
   xml:
     path: "{{ pcmk_config.path }}"
@@ -13,9 +15,15 @@
       {%    set arg1 = pcmk_constraint['first'] %}
       {%    set arg2 = pcmk_constraint['then'] %}
       {%  endif -%}
+      {%  if pcmk_constraint['score'] is defined %}
       {{  '/cib/configuration/constraints/rsc_%(type)s[@id="%(type)s-%(arg1)s-%(arg2)s-%(score)s"]'
       | format(type = pcmk_constraint.type, arg1 = arg1, arg2 = arg2, score = pcmk_constraint.score) }}
+      {%  else %}
+      {{  '/cib/configuration/constraints/rsc_%(type)s[@id="%(type)s-%(arg1)s-%(arg2)s-mandatory"]'
+      | format(type = pcmk_constraint.type, arg1 = arg1, arg2 = arg2) }}
+      {%  endif -%}
   check_mode: false
+  run_once: true
 
 - name: Set pcmk_constraint properties
   xml:
@@ -31,8 +39,13 @@
       {%    set arg1 = pcmk_constraint['first'] %}
       {%    set arg2 = pcmk_constraint['then'] %}
       {%  endif -%}
+      {%  if pcmk_constraint['score'] is defined %}
       {{  '/cib/configuration/constraints/rsc_%(type)s[@id="%(type)s-%(arg1)s-%(arg2)s-%(score)s"]'
       | format(type = pcmk_constraint.type, arg1 = arg1, arg2 = arg2, score = pcmk_constraint.score) }}
+      {%  else %}
+      {{  '/cib/configuration/constraints/rsc_%(type)s[@id="%(type)s-%(arg1)s-%(arg2)s-mandatory"]'
+      | format(type = pcmk_constraint.type, arg1 = arg1, arg2 = arg2) }}
+      {%  endif -%}
     attribute: "{{ attr_name }}"
     value: |-
       {%  if pcmk_constraint[attr_name] is sameas(true) %}
@@ -47,3 +60,6 @@
     loop_var: attr_name
     label: "{{ '{%s: %s}' | format(attr_name, pcmk_constraint[attr_name]) }}"
   check_mode: false
+  run_once: true
+
+- include_tasks: post.yml
