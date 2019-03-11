@@ -1,14 +1,22 @@
 ---
 galaxy_info:
+  role_name: pacemaker
   author: Development Gateway
   description: Configure Pacemaker cluster
   company: Development Gateway
-  license: GPLv3+
-  min_ansible_version: 2.5
+  license: GPLv3
+  min_ansible_version: 2.7
   platforms:
-  - name: EL
-    versions:
-    - 7
-  categories:
-  - clustering
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - clustering
+    - cluster
+    - pacemaker
+    - corosync
+    - ha
+    - highavailability
+    - heartbeat
+    - pcs
 dependencies: []
