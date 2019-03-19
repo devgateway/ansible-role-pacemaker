@@ -13,9 +13,11 @@
   vars:
     primitive_parent: '/cib/configuration/resources/group[@id="{{ pcmk_group.id }}"]'
     parent_id: "{{ pcmk_group.id }}"
-    primitive: "{{ item.value }}"
-    primitive_id: "{{ item.key }}"
+    primitive: "{{ inner_item.value }}"
+    primitive_id: "{{ inner_item.key }}"
   with_dict: "{{ pcmk_group.resources }}"
   run_once: true
+  loop_control:
+    loop_var: inner_item
 
 - include_tasks: post.yml

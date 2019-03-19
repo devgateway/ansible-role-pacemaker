@@ -45,12 +45,14 @@
 
 - name: Start all nodes
   service:
-    name: "{{ item }}"
+    name: "{{ inner_item }}"
     enabled: true
     state: started
   loop:
     - corosync
     - pacemaker
+  loop_control:
+    loop_var: inner_item
 
 - include_tasks: pre.yml
 
