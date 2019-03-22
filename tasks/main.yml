@@ -15,7 +15,8 @@
   user:
     name: "{{ pcmk_user }}"
     system: true
-    password: "{{ pcmk_password | password_hash('sha512', ansible_hostname) }}"
+#    password: "{{ pcmk_password | password_hash('sha512', ansible_hostname) }}"
+    password: "{{ pcmk_password | password_hash('sha512') }}"
 
 - name: Authenticate all nodes
   command: >
@@ -45,12 +46,14 @@
 
 - name: Start all nodes
   service:
-    name: "{{ item }}"
+    name: "{{ inner_item }}"
     enabled: true
     state: started
   loop:
     - corosync
     - pacemaker
+  loop_control:
+    loop_var: inner_item
 
 - include_tasks: pre.yml
 
