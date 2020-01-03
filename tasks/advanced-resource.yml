@@ -19,7 +19,7 @@
   with_dict: "{{ pcmk_resource.meta | default({}) }}"
   loop_control:
     loop_var: nvpair
-    label: "{{ '{' ~ nvpair.name ~ ': ' ~ nvpair.value ~ '}' }}"
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
   run_once: true
 
 - name: Create resources in {{ pcmk_resource.id }}
