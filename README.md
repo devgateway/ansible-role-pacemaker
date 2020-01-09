@@ -349,37 +349,36 @@ wiki](https://wiki.clusterlabs.org/wiki/PgSQL_Replicated_Cluster).
         - name: Set up constraints
           include_role:
             name: devgateway.pacemaker
-            tasks_from: constraint
-          loop_control:
-            loop_var: pcmk_constraint
-          loop:
-            - type: colocation
-              rsc: virtual-ip
-              with-rsc: postgres
-              with-rsc-role: Master
-              score: INFINITY
-            - type: colocation
-              rsc: nginx
-              with-rsc: virtual-ip
-              score: INFINITY
-            - type: colocation
-              rsc: coolapp
-              with-rsc: virtual-ip
-              score: INFINITY
-            - type: order
-              first: postgres
-              first-action: promote
-              then: virtual-ip
-              then-action: start
-              symmetrical: false
-              score: INFINITY
-            - type: order
-              first: postgres
-              first-action: demote
-              then: virtual-ip
-              then-action: stop
-              symmetrical: false
-              score: 0
+            tasks_from: constraints
+          vars:
+            pcmk_constraints:
+              - type: colocation
+                rsc: virtual-ip
+                with-rsc: postgres
+                with-rsc-role: Master
+                score: INFINITY
+              - type: colocation
+                rsc: nginx
+                with-rsc: virtual-ip
+                score: INFINITY
+              - type: colocation
+                rsc: coolapp
+                with-rsc: virtual-ip
+                score: INFINITY
+              - type: order
+                first: postgres
+                first-action: promote
+                then: virtual-ip
+                then-action: start
+                symmetrical: false
+                score: INFINITY
+              - type: order
+                first: postgres
+                first-action: demote
+                then: virtual-ip
+                then-action: stop
+                symmetrical: false
+                score: 0
 
 ## See also
 
