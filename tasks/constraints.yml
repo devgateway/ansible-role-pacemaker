@@ -1,0 +1,11 @@
+---
+- include_tasks: pre.yml
+
+- name: Configure multiple constraints
+  include_tasks: constraint.yml
+  loop_control:
+    loop_var: pcmk_constraint
+  loop: "{{ pcmk_constraints }}"
+  run_once: true
+
+- include_tasks: post.yml
