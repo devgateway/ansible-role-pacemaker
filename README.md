@@ -159,12 +159,12 @@ The dictionary may contain other members, e.g. `symmetrical`.
         - name: Set up constraints
           include_role:
             name: devgateway.pacemaker
-            tasks_from: constraint
+            tasks_from: constraints
           vars:
-            pcmk_constraint:
-              type: order
-              first: dns-ip
-              then: dns-clone
+            pcmk_constraints:
+              - type: order
+                first: dns-ip
+                then: dns-clone
 
 ### Active-active Squid proxy
 
@@ -218,12 +218,12 @@ The dictionary may contain other members, e.g. `symmetrical`.
         - name: Set up constraints
           include_role:
             name: devgateway.pacemaker
-            tasks_from: constraint
+            tasks_from: constraints
           vars:
-            pcmk_constraint:
-              type: order
-              first: squid-ip
-              then: squid
+            pcmk_constraints:
+              - type: order
+                first: squid-ip
+                then: squid
 
 ### Nginx, web application, and master-slave Postgres
 
