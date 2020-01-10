@@ -1,0 +1,11 @@
+---
+- name: Create resource {{ resource_id | default(resource.id) }}
+  include_tasks: primitive.yml
+  vars:
+    primitive_parent: "{{ resource_parent }}"
+    primitive: "{{ resource }}"
+    primitive_id: "{{ resource_id }}"
+  when: resource.resources is not defined
+- name: Create advanced resource {{ resource_id | default(resource.id) }}
+  include_tasks: advanced.yml
+  when: resource.resources is defined
