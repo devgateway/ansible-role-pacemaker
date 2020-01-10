@@ -1,37 +1,11 @@
 ---
 - include_tasks: pre.yml
 
-- name: Create {{ pcmk_resource.type }} resource {{ pcmk_resource.id }}
-  xml:
-    path: "{{ pcmk_config.path }}"
-    xpath: "/cib/configuration/resources/{{ pcmk_resource.type }}[@id='{{ pcmk_resource.id }}']"
-  check_mode: false
-  run_once: true
-
-- name: Configure attributes for {{ pcmk_resource.id }}
-  include_tasks: nvpair.yml
+- name: Configure advanced resource
+  include_tasks: advanced.yml
   vars:
-    nvpair_parent: >-
-      {{ '/cib/configuration/resources/' ~
-      '%(type)s[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
-      | format(type = pcmk_resource.type, id = pcmk_resource.id) }}
-    parent_id: "{{ pcmk_resource.id }}"
-  with_dict: "{{ pcmk_resource.meta | default({}) }}"
-  loop_control:
-    loop_var: nvpair
-    label: "{{ '{' ~ nvpair.name ~ ': ' ~ nvpair.value ~ '}' }}"
-  run_once: true
-
-- name: Create resources in {{ pcmk_resource.id }}
-  include_tasks: primitive.yml
-  vars:
-    primitive_parent: >-
-      {{ '/cib/configuration/resources/%(type)s[@id="%(id)s"]'
-      | format(type = pcmk_resource.type, id = pcmk_resource.id) }}
-    parent_id: "{{ pcmk_resource.id }}"
-    primitive: "{{ item.value }}"
-    primitive_id: "{{ item.key }}"
-  with_dict: "{{ pcmk_resource.resources }}"
+    resource_parent: /cib/configuration/resources
+    resource: "{{ pcmk_resource }}"
   run_once: true
 
 - include_tasks: post.yml

@@ -1,0 +1,33 @@
+---
+- name: Create {{ resource.type }} resource {{ resource_id | default(resource.id) }}
+  xml:
+    path: "{{ pcmk_config.path }}"
+    xpath: "{{ resource_parent }}/{{ resource.type }}[@id='{{ resource_id | default(resource.id) }}']"
+  check_mode: false
+  run_once: true
+
+- name: Configure attributes for {{ resource_id | default(resource.id) }}
+  include_tasks: nvpair.yml
+  vars:
+    nvpair_parent: >-
+      {{ resource_parent ~ '/' ~
+      '%(type)s[@id="%(id)s"]/meta_attributes[@id="%(id)s-meta_attributes"]'
+      | format(type = resource.type, id = resource_id | default(resource.id)) }}
+    parent_id: "{{ resource_id | default(resource.id) }}"
+  with_dict: "{{ resource.meta | default({}) }}"
+  loop_control:
+    loop_var: nvpair
+    label: "{{ '{' ~ nvpair.key ~ ': ' ~ nvpair.value ~ '}' }}"
+  run_once: true
+
+- name: Create resources in {{ resource_id | default(resource.id) }}
+  include_tasks: primitive.yml
+  vars:
+    primitive_parent: >-
+      {{ resource_parent ~ '/%(type)s[@id="%(id)s"]'
+      | format(type = resource.type, id = resource_id | default(resource.id)) }}
+    parent_id: "{{ resource_id | default(resource.id) }}"
+    primitive: "{{ item.value }}"
+    primitive_id: "{{ item.key }}"
+  with_dict: "{{ resource.resources }}"
+  run_once: true
